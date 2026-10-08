@@ -1,0 +1,1176 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<link rel="icon" href="icon.svg">
+<link rel="apple-touch-icon" href="icon.svg">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script src="firebase-config.js"></script>
+</head>
+<body style="margin:0">
+<title>Cozinha Lucca &amp; Izis</title>
+<meta name="theme-color" content="#3A5A40">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap">
+<style>
+/* Layout: uma coluna de celular (~390px), cabeçalho com os dois avatares, conteúdo em cartões de papel, barra inferior com 4 abas */
+:root{
+  --paper:#F7F4EC; --sand:#E9E2D0; --card:#FFFDF7; --sage:#A3B18A; --moss:#3A5A40; --wood:#C8A97E;
+  --ink:#2C372E; --ink-soft:#6E7766; --line:rgba(58,90,64,.14); --line-strong:rgba(58,90,64,.28);
+  --btn:#3A5A40; --on-btn:#F7F4EC; --accent-text:#3A5A40; --soft:#EEF0E4; --danger:#A8573E;
+  --shadow:0 1px 2px rgba(44,55,46,.05), 0 12px 32px -18px rgba(44,55,46,.28); --hero:#3A5A40; --on-hero:#F3EFE3; --hero-soft:rgba(243,239,227,.12);
+  --grain:.05; --skin:#F4D7BC; --blush:#E9A496;
+  --f-display:'Outfit',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --f-body:'Manrope',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --r-lg:24px; --r-md:16px; --r-sm:12px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --paper:#1A201B; --sand:#262E27; --card:#222A23; --sage:#93A47A; --moss:#3A5A40; --wood:#C8A97E;
+  --ink:#ECE6D6; --ink-soft:#A6AE9C; --line:rgba(233,226,208,.10); --line-strong:rgba(233,226,208,.22);
+  --btn:#A3B18A; --on-btn:#1A201B; --accent-text:#B9C9A0; --soft:#2A332B; --danger:#E0957B;
+  --shadow:0 1px 2px rgba(0,0,0,.3), 0 12px 32px -18px rgba(0,0,0,.7); --grain:.07; --hero:#2F4A35; --on-hero:#F3EFE3; --hero-soft:rgba(243,239,227,.10); color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#1A201B; --sand:#262E27; --card:#222A23; --sage:#93A47A; --moss:#3A5A40; --wood:#C8A97E;
+  --ink:#ECE6D6; --ink-soft:#A6AE9C; --line:rgba(233,226,208,.10); --line-strong:rgba(233,226,208,.22);
+  --btn:#A3B18A; --on-btn:#1A201B; --accent-text:#B9C9A0; --soft:#2A332B; --danger:#E0957B;
+  --shadow:0 1px 2px rgba(0,0,0,.3), 0 12px 32px -18px rgba(0,0,0,.7); --grain:.07; --hero:#2F4A35; --on-hero:#F3EFE3; --hero-soft:rgba(243,239,227,.10); color-scheme:dark}
+
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.45;-webkit-tap-highlight-color:transparent}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;opacity:var(--grain);z-index:0;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .4 0 0 0 0 .35 0 0 0 0 .25 0 0 0 1.2 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer;background:none;border:0;padding:0}
+:focus-visible{outline:2px solid var(--sage);outline-offset:2px;border-radius:10px}
+h1,h2,h3{font-family:var(--f-display);font-weight:600;margin:0;text-wrap:balance;letter-spacing:-.02em}
+.wrap{position:relative;z-index:1;max-width:480px;margin:0 auto;padding-inline:16px;padding-block:18px calc(124px + env(safe-area-inset-bottom,0px))}
+
+/* ---------- cabeçalho ---------- */
+.hero{display:grid;gap:18px}
+.hero-top{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.pair{display:flex;flex-shrink:0}
+.pair .av-btn + .av-btn{margin-left:-10px}
+.av-btn{border-radius:50%;transition:transform .3s cubic-bezier(.34,1.56,.64,1)}
+.av-btn:active{transform:scale(.92)}
+.av{--s:56px;width:var(--s);height:var(--s);border-radius:50%;display:inline-grid;place-items:center;overflow:hidden;flex-shrink:0;
+  background:var(--sand);box-shadow:0 0 0 2.5px var(--paper)}
+.av img,.av svg{width:100%;height:100%;object-fit:cover;display:block}
+.av.izis{background:color-mix(in srgb,var(--wood) 45%,var(--sand))}
+.av.lucca{background:color-mix(in srgb,var(--sage) 50%,var(--sand))}
+.eyebrow{margin:0;font-size:12.5px;color:var(--ink-soft);font-weight:600;font-variant-numeric:tabular-nums}
+.hello{font-size:34px;line-height:1.02;letter-spacing:-.035em;font-weight:600}
+.hello span{color:var(--sage)}
+.sub{margin:6px 0 0;color:var(--ink-soft);font-weight:500;font-size:15px}
+.today{position:relative;overflow:hidden;background:var(--hero);color:var(--on-hero);border-radius:28px;padding:16px;display:grid;gap:12px}
+.today-h{display:flex;align-items:center;justify-content:space-between;font-size:12.5px;font-weight:600;opacity:.8;position:relative}
+.today-g{display:grid;grid-template-columns:1fr 1fr;gap:8px;position:relative}
+.tcell{display:grid;gap:6px;align-content:start;text-align:left;background:var(--hero-soft);border-radius:18px;padding:12px;min-height:96px;color:inherit;min-width:0;transition:transform .3s cubic-bezier(.34,1.56,.64,1)}
+.tcell:active{transform:scale(.97)}
+.tcell small{font-size:11.5px;font-weight:600;opacity:.7}
+.tcell .te{font-size:28px;line-height:1}
+.tcell b{font-family:var(--f-display);font-weight:500;font-size:15.5px;line-height:1.2;letter-spacing:-.01em;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.tcell.empty{border:1.5px dashed rgba(243,239,227,.3);background:transparent}
+.tcell.empty b{opacity:.75}
+.tcell .av{--s:20px;box-shadow:none}
+.sprig{position:absolute;right:-14px;bottom:-18px;width:120px;height:120px;color:var(--on-hero);opacity:.10;pointer-events:none}
+
+/* ---------- vistas ---------- */
+.view{display:grid;gap:16px;margin-top:28px;animation:enter .5s cubic-bezier(.16,1,.3,1) both}
+@keyframes enter{from{opacity:.0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.vhead{display:flex;align-items:flex-end;justify-content:space-between;gap:12px}
+.vhead h2{font-size:28px;letter-spacing:-.03em}
+.vhead p{margin:2px 0 0;color:var(--ink-soft);font-size:13px;font-weight:600}
+.search{display:flex;align-items:center;gap:10px;background:var(--sand);border:1px solid transparent;border-radius:16px;padding:0 14px;height:48px;transition:border-color .2s,background .2s}
+.search:focus-within{background:var(--card);border-color:var(--sage)}
+.search svg{width:18px;height:18px;color:var(--ink-soft);flex-shrink:0}
+.search input{flex:1;min-width:0;border:0;background:transparent;outline:none;height:100%}
+.tagbar{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin-inline:-16px;padding-inline:16px;padding-block:2px}
+.tagbar::-webkit-scrollbar{display:none}
+.tchip{flex-shrink:0;display:inline-flex;align-items:center;gap:6px;height:36px;padding:0 14px;border-radius:12px;font-size:13px;font-weight:600;
+  background:var(--card);border:1px solid var(--line-strong);transition:transform .15s,background .2s}
+.tchip.on{background:var(--btn);color:var(--on-btn);border-color:var(--btn)}
+.tchip:active{transform:scale(.95)}
+.tchip.ghost{background:transparent;border-style:dashed;border-color:var(--line-strong);color:var(--ink-soft)}
+.chips{display:flex;flex-wrap:wrap;gap:5px}
+.chip{display:inline-flex;align-items:center;gap:4px;font-size:11.5px;font-weight:700;padding:3px 8px;border-radius:999px;
+  background:color-mix(in srgb,var(--tc,var(--sage)) 24%,var(--card));color:var(--ink)}
+
+.list{display:grid;gap:12px;grid-template-columns:1fr 1fr}
+.list > .empty-state{grid-column:1/-1}
+.rcard{position:relative;display:grid;gap:10px;align-content:start;padding:8px 8px 12px;background:var(--card);border-radius:26px;
+  border:1px solid var(--line);box-shadow:var(--shadow);cursor:pointer;min-width:0;transition:transform .35s cubic-bezier(.34,1.56,.64,1)}
+.rcard:active{transform:scale(.97)}
+.thumb{width:76px;height:76px;border-radius:18px;display:grid;place-items:center;font-size:38px;overflow:hidden;
+  background:color-mix(in srgb,var(--tc,var(--sage)) 30%,var(--sand))}
+.thumb img{width:100%;height:100%;object-fit:cover}
+.rcard > .thumb{width:100%;height:auto;aspect-ratio:1/1;max-width:100%;border-radius:19px;font-size:54px}
+.rbody{min-width:0;display:grid;gap:6px;padding-inline:4px}
+.rbody h3{font-size:16px;line-height:1.2;font-weight:600;letter-spacing:-.015em;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.meta{margin:0;font-size:12px;color:var(--ink-soft);font-weight:600;display:flex;align-items:center;gap:5px;font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.meta svg{flex-shrink:0}
+.meta svg{width:14px;height:14px}
+.heart{position:absolute;top:14px;right:14px;width:36px;height:36px;border-radius:50%;display:grid;place-items:center;color:var(--ink);
+  background:color-mix(in srgb,var(--card) 78%,transparent);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.heart svg{width:19px;height:19px;fill:transparent;stroke:currentColor;stroke-width:1.8;transition:fill .2s}
+.heart.on{color:#D9705A}
+.heart.on svg{fill:currentColor}
+.heart.pop{animation:pop .5s cubic-bezier(.34,1.56,.64,1)}
+@keyframes pop{0%{transform:scale(1)}40%{transform:scale(1.3)}100%{transform:scale(1)}}
+.mini-btn{margin-inline:4px;font-size:12.5px;font-weight:700;color:var(--accent-text);background:var(--soft);padding:8px 10px;border-radius:12px;text-align:center}
+.bounce{animation:bounce .6s cubic-bezier(.34,1.56,.64,1)}
+@keyframes bounce{0%{transform:scale(.88);opacity:.5}60%{transform:scale(1.03);opacity:1}100%{transform:scale(1)}}
+
+.empty-state{text-align:center;padding:36px 20px;border:1.5px dashed var(--line-strong);border-radius:var(--r-lg);color:var(--ink-soft)}
+.empty-state .big{font-size:44px;display:block;margin-bottom:6px}
+.empty-state h3{color:var(--ink);font-size:18px;margin-bottom:4px}
+.empty-state p{margin:0 0 14px}
+
+.fab{position:fixed;z-index:20;right:max(18px,calc(50% - 240px + 18px));bottom:calc(98px + env(safe-area-inset-bottom,0px));
+  width:60px;height:60px;border-radius:22px;background:var(--btn);color:var(--on-btn);display:grid;place-items:center;
+  box-shadow:0 14px 28px -10px rgba(58,90,64,.6);transition:transform .2s}
+.fab svg{width:26px;height:26px}
+.fab{transition:transform .4s cubic-bezier(.34,1.56,.64,1)}
+.fab:active{transform:scale(.9) rotate(90deg)}
+
+/* ---------- barra de abas ---------- */
+.tabs{position:fixed;left:0;right:0;bottom:0;z-index:25;padding:0 12px calc(10px + env(safe-area-inset-bottom,0px));pointer-events:none}
+.tabs-in{pointer-events:auto;max-width:456px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);gap:4px;padding:6px;border-radius:26px;
+  background:color-mix(in srgb,var(--card) 80%,transparent);backdrop-filter:blur(18px) saturate(1.4);-webkit-backdrop-filter:blur(18px) saturate(1.4);
+  border:1px solid var(--line);box-shadow:0 18px 40px -20px rgba(44,55,46,.45)}
+.tab{display:grid;justify-items:center;gap:2px;padding:7px 0 6px;border-radius:20px;font-size:11px;font-weight:600;color:var(--ink-soft);position:relative;transition:background .3s,color .3s}
+.tab svg{width:23px;height:23px;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;transition:transform .4s cubic-bezier(.34,1.56,.64,1)}
+.tab[aria-current="page"]{color:var(--on-btn);background:var(--btn)}
+.tab[aria-current="page"] svg{transform:scale(1.06)}
+.tab .count{position:absolute;top:3px;left:calc(50% + 7px);min-width:17px;height:17px;padding:0 5px;border-radius:999px;background:var(--wood);color:#2C372E;font-size:10px;font-weight:800;display:grid;place-items:center;font-variant-numeric:tabular-nums}
+
+/* ---------- semana ---------- */
+.weeknav{display:flex;align-items:center;gap:10px;background:var(--sand);border-radius:18px;padding:5px}
+.weeknav > div{flex:1;text-align:center;line-height:1.2}
+.weeknav strong{font-family:var(--f-display);font-weight:600;font-size:16px;display:block}
+.weeknav small{color:var(--ink-soft);font-weight:700;font-size:12px}
+.navbtn{width:40px;height:40px;border-radius:14px;display:grid;place-items:center;background:var(--card);font-size:20px;color:var(--accent-text)}
+.actions{display:flex;gap:8px;flex-wrap:wrap}
+.pill{display:inline-flex;align-items:center;gap:6px;height:40px;padding:0 15px;border-radius:14px;font-weight:600;font-size:13.5px;
+  background:var(--card);border:1px solid var(--line-strong);text-decoration:none;color:var(--ink);transition:transform .15s,background .2s}
+.pill:active{transform:scale(.96)}
+.pill.solid{background:var(--btn);color:var(--on-btn);border-color:var(--btn)}
+.pill.armed,.danger.armed{background:var(--danger);color:#FFF8F2;border-color:var(--danger)}
+.days{display:grid;gap:10px}
+.day{background:var(--card);border:1px solid var(--line);border-radius:24px;padding:8px;display:grid;grid-template-columns:46px 1fr;gap:8px;align-items:stretch;box-shadow:var(--shadow)}
+.day.today{border-color:var(--sage);box-shadow:0 0 0 2px color-mix(in srgb,var(--sage) 40%,transparent),var(--shadow)}
+.dhead{display:grid;align-content:center;justify-items:center;gap:0;border-radius:16px;background:var(--sand);padding:6px 0}
+.day.today .dhead{background:var(--btn);color:var(--on-btn)}
+.day.today .dhead .ddate{color:inherit;opacity:.8}
+.dname{font-family:var(--f-display);font-weight:600;font-size:24px;letter-spacing:-.03em;line-height:1;font-variant-numeric:tabular-nums}
+.ddate{color:var(--ink-soft);font-size:11.5px;font-weight:700}
+.badge{margin-left:auto;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;background:var(--sage);color:#22301F;padding:3px 9px;border-radius:999px}
+.slots{display:grid;grid-template-columns:1fr 1fr;gap:6px;min-width:0}
+.slot{min-height:68px;border-radius:16px;display:flex;align-items:center;gap:6px;padding:8px;text-align:left;position:relative;min-width:0;transition:background .2s,box-shadow .2s,transform .15s}
+.slot small{display:block;font-size:11px;font-weight:600;color:var(--ink-soft)}
+.slot.empty{border:1.5px dashed var(--line-strong);color:var(--ink-soft);font-weight:700;font-size:13px;flex-direction:column;align-items:flex-start;justify-content:center;padding-left:12px}
+.slot.empty span{color:var(--accent-text)}
+.slot.filled{padding-left:18px;}
+.slot.filled{background:color-mix(in srgb,var(--sage) 20%,var(--card));border:1px solid transparent}
+.slot.noshop{background:color-mix(in srgb,var(--wood) 12%,var(--card));border:1.5px dashed color-mix(in srgb,var(--wood) 75%,transparent)}
+.slot.over{box-shadow:0 0 0 2px var(--btn);transform:scale(1.02)}
+.slot.dragging{opacity:.35}
+.slot.ghost{position:fixed;top:0;left:0;z-index:100;pointer-events:none;opacity:.95;box-shadow:0 18px 30px -12px rgba(0,0,0,.4);transform-origin:center}
+.grip{position:absolute;left:0;top:0;bottom:0;width:18px;display:grid;place-items:center;color:var(--ink-soft);touch-action:none;cursor:grab;font-size:13px;letter-spacing:-2px;flex-shrink:0;opacity:.7}
+.sbody{flex:1;min-width:0;text-align:left;display:grid;gap:2px}
+.sname{font-weight:700;font-size:13px;line-height:1.25;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.noshop-tag{font-style:normal;font-size:10px;font-weight:800;color:color-mix(in srgb,var(--wood) 70%,var(--ink));text-transform:uppercase;letter-spacing:.05em}
+.slot .av{--s:22px;box-shadow:0 0 0 2px var(--card);position:absolute;top:6px;right:6px}
+.slot.filled small{padding-right:22px}
+.linkbtn{justify-self:center;color:var(--accent-text);font-weight:800;font-size:14px;padding:10px 14px;border-radius:999px}
+
+/* ---------- mercado ---------- */
+.progress-card{background:var(--card);border:1px solid var(--line);border-radius:var(--r-lg);padding:14px 16px;display:grid;gap:10px;box-shadow:var(--shadow)}
+.progress-card .row{display:flex;justify-content:space-between;align-items:baseline;font-weight:600}
+.progress-card .row span{color:var(--ink-soft);font-size:13px;font-variant-numeric:tabular-nums}
+.progress-card .row #pg-n{font-family:var(--f-display);font-size:30px;font-weight:600;letter-spacing:-.03em;color:var(--ink)}
+.progress-card .row #pg-n small{font-size:15px;color:var(--ink-soft);font-weight:500}
+.bar{height:10px;border-radius:999px;background:var(--sand);overflow:hidden}
+.bar > i{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,var(--sage),var(--btn));transition:width .45s cubic-bezier(.3,1.3,.5,1)}
+.group{display:grid;gap:4px}
+.group h3{font-size:16px;font-weight:600;display:flex;align-items:center;gap:8px;padding:0 4px 4px}
+.group h3 small{font-family:var(--f-body);color:var(--ink-soft);font-weight:700;font-size:12px;font-variant-numeric:tabular-nums}
+.items{list-style:none;margin:0;padding:4px;background:var(--card);border:1px solid var(--line);border-radius:24px;box-shadow:var(--shadow)}
+.item{display:flex;align-items:center;gap:12px;padding:10px 10px;border-radius:14px}
+.item + .item{border-top:1px solid var(--line)}
+.check{width:28px;height:28px;flex-shrink:0;border-radius:50%;border:2px solid var(--line-strong);display:grid;place-items:center;transition:background .2s,border-color .2s,transform .2s}
+.check svg{width:16px;height:16px;stroke:var(--on-btn);stroke-width:3;fill:none;stroke-dasharray:20;stroke-dashoffset:20;transition:stroke-dashoffset .3s .05s}
+.done .check{background:var(--btn);border-color:var(--btn);animation:pop .4s cubic-bezier(.3,1.6,.5,1)}
+.done .check svg{stroke-dashoffset:0}
+.iname{flex:1;min-width:0;display:grid}
+.iname span{font-weight:700;justify-self:start;background:linear-gradient(currentColor,currentColor) left 55%/0% 1.5px no-repeat;transition:background-size .35s ease,color .3s}
+.iname small{color:var(--ink-soft);font-size:11.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.done .iname span{background-size:100% 1.5px;color:var(--ink-soft)}
+.done .iqty{opacity:.5}
+.iqty{font-weight:800;font-size:13.5px;color:var(--accent-text);font-variant-numeric:tabular-nums;white-space:nowrap}
+.x{width:28px;height:28px;border-radius:50%;color:var(--ink-soft);font-size:18px;display:grid;place-items:center}
+.addx{display:grid;grid-template-columns:1fr 70px;gap:8px;background:var(--card);border:1px dashed var(--line-strong);border-radius:var(--r-lg);padding:10px}
+.addx .full{grid-column:1/-1;display:flex;gap:8px}
+.addx .full select{flex:1}
+
+/* ---------- formulários ---------- */
+.field{display:grid;gap:6px;font-size:12.5px;font-weight:600;color:var(--ink-soft)}
+.inp,.field input,.field textarea,select.inp{width:100%;min-width:0;border:1px solid var(--line-strong);background:var(--paper);border-radius:var(--r-sm);padding:11px 12px;font-size:15px;font-weight:600;color:var(--ink);text-transform:none;letter-spacing:0;outline:none;transition:border-color .2s}
+select.inp{padding-right:8px;appearance:auto}
+.inp:focus,.field input:focus,.field textarea:focus{border-color:var(--sage)}
+.err{color:var(--danger);font-size:13px;font-weight:700;margin:0}
+
+/* ---------- sheet ---------- */
+.sheet-wrap{position:fixed;inset:0;z-index:50;display:flex;align-items:flex-end;justify-content:center}
+.scrim{position:absolute;inset:0;background:rgba(26,32,27,.42);opacity:0;transition:opacity .25s}
+.sheet{position:relative;width:100%;max-width:520px;max-height:90%;background:var(--paper);border-radius:32px 32px 0 0;transform:translateY(100%);
+  transition:transform .45s cubic-bezier(.16,1,.3,1);display:flex;flex-direction:column;box-shadow:0 -10px 40px -10px rgba(0,0,0,.35)}
+.sheet-wrap.open .scrim{opacity:1}
+.sheet-wrap.open .sheet{transform:none}
+.grab{width:42px;height:5px;border-radius:9px;background:var(--line-strong);margin:10px auto 0;flex-shrink:0}
+.sheet-close{position:absolute;right:12px;top:10px;width:36px;height:36px;border-radius:50%;display:grid;place-items:center;background:var(--soft);font-size:18px;color:var(--ink-soft);z-index:2}
+.sb{overflow-y:auto;overscroll-behavior:contain;padding-inline:18px;padding-block:10px calc(20px + env(safe-area-inset-bottom,0px));display:grid;gap:16px}
+.sb > h2{font-size:26px;letter-spacing:-.03em;padding-right:44px}
+.sb .subt{margin:-12px 0 0;color:var(--ink-soft);font-weight:600;font-size:13px}
+.sec-t{font-family:var(--f-display);font-weight:600;font-size:17px;display:flex;align-items:center;justify-content:space-between}
+.seg{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;background:var(--sand);border-radius:14px;padding:4px;gap:4px}
+.seg button{height:36px;border-radius:10px;font-weight:800;font-size:13px;color:var(--ink-soft)}
+.seg button.on{background:var(--card);color:var(--ink);box-shadow:var(--shadow)}
+.opt-list{display:grid;gap:8px}
+.opt{display:flex;align-items:center;gap:12px;padding:8px;border-radius:var(--r-md);background:var(--card);border:1px solid var(--line);text-align:left;transition:transform .15s}
+.opt:active{transform:scale(.98)}
+.opt .thumb{width:46px;height:46px;font-size:24px;border-radius:13px}
+.opt.ns{border-style:dashed;border-color:color-mix(in srgb,var(--wood) 70%,transparent)}
+.opt b{display:block;font-size:15px}
+.opt small{color:var(--ink-soft);font-weight:600}
+.cook{display:flex;gap:8px;flex-wrap:wrap}
+.cook button{display:flex;align-items:center;gap:8px;padding:5px 14px 5px 5px;border-radius:999px;border:1px solid var(--line-strong);font-weight:800;font-size:13.5px;background:var(--card)}
+.cook button .av{--s:30px;box-shadow:none}
+.cook button.on{background:var(--btn);color:var(--on-btn);border-color:var(--btn)}
+.cook button.none{padding:5px 14px}
+.btn-row{display:flex;gap:8px;flex-wrap:wrap}
+.btn{flex:1;height:50px;border-radius:16px;font-weight:700;font-size:15px;background:var(--card);border:1px solid var(--line-strong);display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:0 14px;transition:transform .15s}
+.btn:active{transform:scale(.97)}
+.btn.solid{background:var(--btn);color:var(--on-btn);border-color:var(--btn)}
+.btn.danger{color:var(--danger);border-color:color-mix(in srgb,var(--danger) 45%,transparent)}
+
+.detail-hero{height:200px;border-radius:28px;display:grid;place-items:center;font-size:80px;overflow:hidden;background:color-mix(in srgb,var(--tc,var(--sage)) 28%,var(--sand))}
+.detail-hero img{width:100%;height:100%;object-fit:cover}
+.ing-list{list-style:none;margin:0;padding:0;background:var(--card);border-radius:var(--r-md);border:1px solid var(--line)}
+.ing-list li{display:flex;justify-content:space-between;gap:12px;padding:10px 14px;font-weight:600}
+.ing-list li + li{border-top:1px solid var(--line)}
+.ing-list li span:last-child{color:var(--accent-text);font-weight:800;font-variant-numeric:tabular-nums;white-space:nowrap}
+.steps{margin:0;padding:0;list-style:none;display:grid;gap:10px;counter-reset:s}
+.steps li{display:grid;grid-template-columns:30px 1fr;gap:10px;counter-increment:s}
+.steps li::before{content:counter(s);width:30px;height:30px;border-radius:10px;background:var(--sage);color:#22301F;font-family:var(--f-display);font-weight:600;display:grid;place-items:center}
+
+.ed-top{display:grid;grid-template-columns:96px 1fr;gap:12px;align-items:start}
+.photo-pick{width:96px;height:96px;border-radius:22px;background:var(--sand);display:grid;place-items:center;font-size:42px;overflow:hidden;position:relative;border:1.5px dashed var(--line-strong)}
+.photo-pick img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0}
+.photo-pick small{position:absolute;bottom:6px;left:0;right:0;font-size:10.5px;font-weight:800;color:var(--ink);text-transform:uppercase;letter-spacing:.06em}
+.photo-pick img + small{background:rgba(247,244,236,.85);color:#2C372E;bottom:0;padding:3px 0}
+.two{display:grid;grid-template-columns:72px 1fr;gap:8px}
+.ing{display:grid;gap:6px;padding:10px;background:var(--card);border:1px solid var(--line);border-radius:var(--r-md)}
+.ing-r1{display:flex;gap:6px}
+.ing-r1 input{flex:1}
+.ing-r2{display:grid;grid-template-columns:64px 84px 1fr;gap:6px}
+.ing .inp{padding:9px 10px;font-size:14px}
+.icon-btn{width:40px;height:40px;flex-shrink:0;border-radius:12px;display:grid;place-items:center;background:var(--soft);color:var(--ink-soft);font-size:16px;font-weight:800}
+.icon-btn:disabled{opacity:.3}
+.step-ed{display:grid;grid-template-columns:30px 1fr;gap:8px;align-items:start}
+.step-ed .n{width:30px;height:30px;margin-top:6px;border-radius:10px;background:var(--sage);color:#22301F;font-family:var(--f-display);font-weight:600;display:grid;place-items:center}
+.step-ed textarea{resize:vertical;min-height:62px}
+.step-ctl{grid-column:2;display:flex;gap:6px;justify-content:flex-end}
+.step-ctl .icon-btn{width:34px;height:34px}
+.add-line{height:44px;border-radius:14px;border:1.5px dashed var(--line-strong);font-weight:800;color:var(--accent-text)}
+.sticky-foot{position:sticky;bottom:calc(-20px - env(safe-area-inset-bottom,0px));margin-inline:-18px;padding:12px 18px calc(12px + env(safe-area-inset-bottom,0px));background:linear-gradient(transparent,var(--paper) 30%);display:flex;gap:8px}
+.mrow{display:flex;gap:8px;align-items:center}
+.mrow .emo{width:54px;text-align:center;font-size:20px;padding:8px 4px}
+.mrow .inp{flex:1}
+.tagrow{display:grid;gap:8px;padding:10px;background:var(--card);border-radius:var(--r-md);border:1px solid var(--line)}
+.swatches{display:flex;gap:8px;flex-wrap:wrap}
+.sw{width:30px;height:30px;border-radius:50%;background:var(--c);border:2px solid var(--card);box-shadow:0 0 0 1px var(--line-strong)}
+.sw.on{box-shadow:0 0 0 2px var(--ink)}
+.wk-grid{display:grid;gap:8px}
+.wk-row{display:grid;grid-template-columns:62px 1fr 1fr;gap:8px;align-items:center}
+.wk-row > span{font-weight:800;font-size:13px}
+.wk-row button{min-height:46px;border-radius:12px;background:var(--card);border:1px solid var(--line);font-size:12px;font-weight:700;text-align:left;padding:6px 10px;line-height:1.2;color:var(--ink-soft);min-width:0;overflow:hidden}
+.wk-row button b{display:block;font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink)}
+.wk-row button.free{border-style:dashed;color:var(--accent-text)}
+.av-preview{display:flex;justify-content:center}
+.av-preview .av{--s:150px}
+.copybox{width:100%;min-height:200px;font-family:ui-monospace,monospace;font-size:13px}
+
+.toast{position:fixed;left:50%;bottom:calc(96px + env(safe-area-inset-bottom,0px));z-index:80;transform:translate(-50%,20px);opacity:0;pointer-events:none;
+  background:var(--ink);color:var(--paper);padding:11px 18px;border-radius:999px;font-weight:700;font-size:14px;max-width:calc(100% - 32px);text-align:center;transition:opacity .25s,transform .3s cubic-bezier(.3,1.4,.5,1)}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+#confetti{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:90}
+.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.hero-meta{display:grid;gap:7px;justify-items:start;min-width:0}
+.sync{display:inline-flex;align-items:center;gap:6px;height:26px;padding:0 10px;border-radius:999px;font-size:11.5px;font-weight:700;background:var(--sand);color:var(--ink-soft)}
+.sync i{width:7px;height:7px;border-radius:50%;background:var(--wood);flex-shrink:0}
+.sync.s-on i{background:#6E9A5B}
+.sync.s-empty{background:var(--btn);color:var(--on-btn)}
+.sync.s-empty i{background:var(--on-btn)}
+.sync.s-nocasa{background:var(--btn);color:var(--on-btn)}
+.sync.s-nocasa i{background:var(--on-btn)}
+.sync.s-connecting i{animation:blink 1s ease-in-out infinite}
+@keyframes blink{50%{opacity:.25}}
+.dice{font-size:12px;font-weight:700;background:var(--hero-soft);color:inherit;padding:5px 11px;border-radius:999px}
+.vh-act{display:flex;gap:6px;flex-shrink:0}
+.roleta{display:grid;justify-items:center;gap:10px;padding:30px 16px;border-radius:28px;background:color-mix(in srgb,var(--sage) 22%,var(--card));text-align:center}
+.rl-emoji{font-size:84px;line-height:1;display:block}
+.roleta b{font-family:var(--f-display);font-size:22px;font-weight:600;letter-spacing:-.02em;min-height:1.3em;text-wrap:balance}
+.roleta.spin .rl-emoji{animation:wob .16s ease-in-out infinite alternate}
+.roleta.landed{animation:bounce .6s cubic-bezier(.34,1.56,.64,1)}
+@keyframes wob{from{transform:rotate(-9deg) scale(.94)}to{transform:rotate(9deg) scale(1.06)}}
+.newtag{display:flex;gap:8px;align-items:center}
+.newtag .inp{flex:1;min-width:0}
+.newtag .emo{flex:0 0 54px;text-align:center;font-size:18px;padding:9px 4px}
+.del-btn{height:40px;padding:0 12px;border-radius:12px;font-weight:700;font-size:13px;color:var(--danger);background:color-mix(in srgb,var(--danger) 10%,transparent);flex-shrink:0;transition:background .2s,color .2s}
+.del-btn.armed{background:var(--danger);color:#FFF8F2}
+.tag-use{color:var(--ink-soft);font-size:12px;font-weight:600}
+.set-sec{display:grid;gap:10px;padding:16px;border-radius:22px;background:var(--card);border:1px solid var(--line)}
+.set-sec h3{font-size:17px}
+.set-sec p{margin:0;color:var(--ink-soft);font-size:13.5px}
+.set-sec .btn{flex:1 1 140px}
+@media (prefers-reduced-motion: reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+</style>
+
+<div class="wrap">
+  <header class="hero" id="hero"></header>
+  <main id="view"></main>
+</div>
+
+<button class="fab" id="fab" data-act="newRecipe" aria-label="Adicionar receita"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button>
+
+<nav class="tabs" aria-label="Abas">
+  <div class="tabs-in">
+    <button class="tab" data-act="tab" data-tab="cardapio"><svg viewBox="0 0 24 24"><path d="M3.5 12h17a8.5 8.5 0 0 1-17 0Z"/><path d="M8.5 8.5c0-1.6 1.6-1.9 1.6-3.5M12.5 8.5c0-1.6 1.6-1.9 1.6-3.5"/><path d="M7 20.5h10"/></svg>Cardápio</button>
+    <button class="tab" data-act="tab" data-tab="favoritos"><svg viewBox="0 0 24 24"><path d="M12 20s-7.5-4.6-7.5-10.2A4.3 4.3 0 0 1 12 7.2a4.3 4.3 0 0 1 7.5 2.6C19.5 15.4 12 20 12 20Z"/></svg>Favoritos</button>
+    <button class="tab" data-act="tab" data-tab="semana"><svg viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15.5" rx="3.5"/><path d="M3.5 10h17M8.5 3v4M15.5 3v4"/><circle cx="9" cy="14.5" r=".6"/><circle cx="12" cy="14.5" r=".6"/><circle cx="15" cy="14.5" r=".6"/></svg>Semana</button>
+    <button class="tab" data-act="tab" data-tab="mercado"><svg viewBox="0 0 24 24"><path d="M3.5 9.5h17l-1.6 9.2a2 2 0 0 1-2 1.8H7.1a2 2 0 0 1-2-1.8Z"/><path d="m8 9.5 4-5.5 4 5.5M9.5 13.5v3.5M14.5 13.5v3.5"/></svg>Mercado<span class="count" id="mcount" hidden></span></button>
+  </div>
+</nav>
+
+<div class="sheet-wrap" id="sheet" hidden>
+  <div class="scrim" data-act="closeSheet"></div>
+  <div class="sheet" role="dialog" aria-modal="true">
+    <div class="grab"></div>
+    <button class="sheet-close" data-act="closeSheet" aria-label="Fechar">✕</button>
+    <div class="sb" id="sb"></div>
+  </div>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<canvas id="confetti"></canvas>
+<input type="file" id="filePick" accept="image/*" class="vh" tabindex="-1" aria-hidden="true">
+
+<script>
+(() => {
+'use strict';
+const KEY = 'minha-cozinha-v1';
+const $ = s => document.querySelector(s);
+const uid = () => Math.random().toString(36).slice(2, 9);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+const CATS = [
+  {id:'hortifruti', name:'Hortifruti', emoji:'🥬'},
+  {id:'carnes', name:'Carnes', emoji:'🥩'},
+  {id:'laticinios', name:'Laticínios', emoji:'🧀'},
+  {id:'mercearia', name:'Mercearia', emoji:'🥫'},
+  {id:'temperos', name:'Temperos', emoji:'🧂'},
+  {id:'outros', name:'Outros', emoji:'🛒'}
+];
+const UNITS = ['un','g','kg','ml','xícara','colher'];
+const COLORS = {salvia:'#A3B18A', musgo:'#3A5A40', madeira:'#C8A97E', areia:'#D9CFB4', argila:'#C99A7A', bambu:'#D2BE78'};
+const DAYS = ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'];
+const DSH = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
+const MON = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+const MEALS = [['l','Almoço'],['d','Jantar']];
+const PEOPLE = ['lucca','izis'];
+const GUESS = {
+  hortifruti:['cebola','alho','tomate','batata','cenoura','alface','limão','limao','banana','maçã','brócolis','brocolis','pepino','cebolinha','salsinha','coentro','repolho','abobrinha','pimentão','gengibre','manga','abacate','couve','espinafre','cogumelo','shimeji','berinjela','mandioca','laranja','morango','rúcula','abóbora','fruta'],
+  carnes:['frango','carne','bife','contrafilé','alcatra','patinho','peixe','salmão','camarão','porco','linguiça','bacon','costela','tilápia','picanha','presunto','acém','lombo','peito'],
+  laticinios:['leite','queijo','manteiga','iogurte','creme de leite','cream cheese','requeijão','ovo','muçarela','mussarela','parmesão','nata'],
+  mercearia:['arroz','feijão','macarrão','farinha','açúcar','óleo','azeite','aveia','quinoa','mel','molho','nori','lentilha','grão','café','pão','fubá','massa','extrato','milho','ervilha','atum','lata','biscoito'],
+  temperos:['sal','pimenta','shoyu','orégano','cominho','páprica','canela','vinagre','curry','louro','tempero','missô','gergelim']
+};
+function guessCat(n){ n = n.toLowerCase().trim(); if (n.length < 3) return null;
+  for (const [c, ws] of Object.entries(GUESS)) if (ws.some(w => n.includes(w))) return c; return null; }
+
+/* ---------- datas ---------- */
+function sundayOf(off){ const d = new Date(); d.setHours(0,0,0,0); d.setDate(d.getDate() - d.getDay() + off*7); return d; }
+function wkey(d){ return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+function addDays(d, n){ const x = new Date(d); x.setDate(x.getDate()+n); return x; }
+function weekLabel(off){ const a = sundayOf(off), b = addDays(a, 6);
+  return a.getMonth() === b.getMonth() ? `${a.getDate()} – ${b.getDate()} ${MON[b.getMonth()]}` : `${a.getDate()} ${MON[a.getMonth()]} – ${b.getDate()} ${MON[b.getMonth()]}`; }
+function emptyWeek(){ return Array.from({length:7}, () => ({l:null, d:null})); }
+
+/* ---------- dados de exemplo ---------- */
+function seed(){
+  const T = {jp:uid(), dia:uid(), sau:uid(), fds:uid()};
+  const tags = [
+    {id:T.jp, name:'Comida japonesa', emoji:'🍣', color:'salvia'},
+    {id:T.dia, name:'Dia a dia', emoji:'🍳', color:'madeira'},
+    {id:T.sau, name:'Saudável', emoji:'🥗', color:'bambu'},
+    {id:T.fds, name:'Fim de semana', emoji:'🎉', color:'argila'}
+  ];
+  const I = (name, qty, unit, cat) => ({name, qty, unit, cat});
+  const R = (name, emoji, time, tg, fav, ingredients, steps) => ({id:uid(), name, emoji, photo:null, time, tags:tg, fav, ingredients, steps, created:Date.now()});
+  const yaki = R('Yakisoba de frango','🍜',35,[T.jp,T.dia],true,[
+    I('Macarrão para yakisoba',500,'g','mercearia'), I('Peito de frango',400,'g','carnes'), I('Brócolis',1,'un','hortifruti'),
+    I('Cenoura',2,'un','hortifruti'), I('Cebola',1,'un','hortifruti'), I('Repolho',1,'un','hortifruti'), I('Shoyu',100,'ml','temperos'), I('Óleo de gergelim',1,'colher','mercearia')],
+    ['Cozinhe o macarrão al dente e escorra.','Corte o frango em tiras e doure no óleo de gergelim.','Junte cebola, cenoura, brócolis e repolho e refogue rapidinho, ainda crocantes.','Adicione o shoyu e o macarrão, misture bem e sirva.']);
+  const pf = R('Arroz, feijão e bife acebolado','🍛',40,[T.dia],false,[
+    I('Arroz',2,'xícara','mercearia'), I('Feijão carioca',500,'g','mercearia'), I('Contrafilé',500,'g','carnes'), I('Cebola',2,'un','hortifruti'), I('Alho',1,'colher','hortifruti'), I('Sal',1,'colher','temperos')],
+    ['Deixe o feijão de molho na noite anterior e cozinhe na pressão por 25 min.','Refogue o alho, junte o arroz e a água fervente.','Tempere os bifes com sal e grelhe na frigideira bem quente.','Na mesma frigideira, doure a cebola em rodelas e cubra os bifes.']);
+  const quinoa = R('Salada de quinoa com legumes','🥗',20,[T.sau],false,[
+    I('Quinoa',1,'xícara','mercearia'), I('Tomate-cereja',250,'g','hortifruti'), I('Pepino',1,'un','hortifruti'), I('Cebola',1,'un','hortifruti'), I('Limão',2,'un','hortifruti'), I('Queijo feta',100,'g','laticinios'), I('Azeite',2,'colher','mercearia')],
+    ['Lave a quinoa e cozinhe por 12 min em água com sal.','Pique tomate, pepino e cebola.','Misture tudo com o feta, tempere com limão e azeite.']);
+  const temaki = R('Temaki caseiro','🍣',30,[T.jp,T.fds],true,[
+    I('Arroz para sushi',2,'xícara','mercearia'), I('Alga nori',10,'un','mercearia'), I('Salmão fresco',300,'g','carnes'), I('Cream cheese',150,'g','laticinios'), I('Cebolinha',1,'un','hortifruti'), I('Pepino',1,'un','hortifruti'), I('Vinagre de arroz',3,'colher','temperos')],
+    ['Cozinhe o arroz e tempere com o vinagre ainda morno.','Corte o salmão e o pepino em tiras.','Monte o cone de nori com arroz, salmão, cream cheese e cebolinha.']);
+  const panq = R('Panqueca de banana e aveia','🥞',15,[T.sau,T.dia],false,[
+    I('Banana',2,'un','hortifruti'), I('Ovos',2,'un','laticinios'), I('Aveia em flocos',1,'xícara','mercearia'), I('Mel',1,'colher','mercearia'), I('Canela',1,'colher','temperos')],
+    ['Amasse as bananas e misture com os ovos e a aveia.','Doure porções pequenas na frigideira antiaderente, 2 min de cada lado.','Sirva com mel e canela.']);
+  const noshop = [
+    {id:uid(), name:'Marmita', emoji:'🍱'}, {id:uid(), name:'Restaurante', emoji:'🍽️'},
+    {id:uid(), name:'Almoço no Paulo', emoji:'🏡'}, {id:uid(), name:'Refeição na Carolina', emoji:'🏡'}
+  ];
+  const wk = emptyWeek();
+  const r = (o, cook=null) => ({t:'r', id:o.id, cook}), n = (i) => ({t:'n', id:noshop[i].id, cook:null});
+  wk[0].l = n(2); wk[0].d = r(panq,'izis');
+  wk[1].l = n(0); wk[1].d = r(yaki,'lucca');
+  wk[2].l = n(0); wk[2].d = r(quinoa,'izis');
+  wk[3].l = n(0); wk[3].d = r(pf,'lucca');
+  wk[4].d = n(1);
+  wk[5].d = r(temaki,'izis');
+  wk[6].l = n(3);
+  return {v:1, tags, recipes:[yaki,pf,quinoa,temaki,panq], noshop, weeks:{[wkey(sundayOf(0))]:wk}, market:{}, avatars:{lucca:null, izis:null}, names:{lucca:'Lucca', izis:'Izis'}};
+}
+
+let canSave = true;
+function load(){ try { const raw = localStorage.getItem(KEY); if (raw) { const s = JSON.parse(raw); if (s && s.v === 1) return s; } } catch(e) {} return seed(); }
+let saveT = null;
+function save(){ queueSync(); saveLocal(); }
+function saveLocal(){ clearTimeout(saveT); saveT = setTimeout(() => {
+  try { localStorage.setItem(KEY, JSON.stringify(S)); }
+  catch(e){ if (canSave) { canSave = false; toast('Não consegui salvar neste navegador 😕'); } } }, 120); }
+
+let S = load();
+const UI = {tab:'cardapio', q:'', tf:new Set(), fq:'', ftf:new Set(), wo:0};
+
+function getWeek(off){ const k = wkey(sundayOf(off)); if (!S.weeks[k]) S.weeks[k] = emptyWeek(); return S.weeks[k]; }
+function peekWeek(off){ return S.weeks[wkey(sundayOf(off))] || null; }
+function resolve(slot){ if (!slot) return null;
+  if (slot.t === 'r') { const o = S.recipes.find(x => x.id === slot.id); return o ? {kind:'r', o} : null; }
+  const o = S.noshop.find(x => x.id === slot.id); return o ? {kind:'n', o} : null; }
+const tagById = id => S.tags.find(t => t.id === id);
+const tcolor = t => COLORS[t?.color] || COLORS.salvia;
+const firstColor = r => { const t = tagById(r.tags[0]); return t ? tcolor(t) : COLORS.salvia; };
+
+/* ---------- avatares ---------- */
+const AV_DEFAULT = {izis:'data:image/jpeg;base64,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', lucca:'data:image/jpeg;base64,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'};
+function chibi(who){
+  const hair = who === 'izis' ? '#5B3A2B' : '#2F2724';
+  const back = who === 'izis'
+    ? `<circle cx="50" cy="17" r="10" fill="${hair}"/><path d="M19 62Q15 24 50 23Q85 24 81 62L79 82Q74 54 66 42Q50 48 34 42Q26 54 21 82Z" fill="${hair}"/>`
+    : '';
+  const front = who === 'izis'
+    ? `<path d="M22 56Q22 26 50 26Q78 26 78 56Q70 40 60 38Q52 46 36 42Q28 46 22 56Z" fill="${hair}"/>`
+    : `<path d="M21 56Q18 22 50 21Q82 22 79 56Q72 38 58 36Q54 44 40 41Q30 44 21 56Z" fill="${hair}"/><path d="M48 21Q52 12 60 14Q54 16 54 22Z" fill="${hair}"/>`;
+  return `<svg viewBox="0 0 100 100" aria-hidden="true">${back}<ellipse cx="50" cy="60" rx="29" ry="27" fill="var(--skin)"/>${front}
+    <ellipse cx="39" cy="63" rx="3.6" ry="4.6" fill="#2A2220"/><ellipse cx="61" cy="63" rx="3.6" ry="4.6" fill="#2A2220"/>
+    <circle cx="40.3" cy="61.4" r="1.3" fill="#fff"/><circle cx="62.3" cy="61.4" r="1.3" fill="#fff"/>
+    <ellipse cx="31" cy="71" rx="5" ry="3" fill="var(--blush)" opacity=".7"/><ellipse cx="69" cy="71" rx="5" ry="3" fill="var(--blush)" opacity=".7"/>
+    <path d="M46 72Q50 76 54 72" stroke="#2A2220" stroke-width="1.8" fill="none" stroke-linecap="round"/></svg>`;
+}
+function avatar(who, size){ const p = S.avatars[who] || AV_DEFAULT[who];
+  return `<span class="av ${who}" style="--s:${size}px">${p ? `<img src="${p}" alt="${esc(S.names[who])}">` : chibi(who)}</span>`; }
+
+/* ---------- ícones ---------- */
+const ICON = {
+  clock:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>',
+  heart:'<svg viewBox="0 0 24 24" stroke-linejoin="round"><path d="M12 20s-7.5-4.6-7.5-10.2A4.3 4.3 0 0 1 12 7.2a4.3 4.3 0 0 1 7.5 2.6C19.5 15.4 12 20 12 20Z"/></svg>',
+  search:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4 4"/></svg>',
+  tick:'<svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>',
+  sprig:'<svg class="sprig" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M88 6Q60 30 42 92"/><path d="M78 20Q64 12 58 24Q70 30 78 20Z"/><path d="M70 34Q86 30 88 44Q74 46 70 34Z"/><path d="M62 50Q46 44 42 58Q56 62 62 50Z"/><path d="M56 66Q72 64 72 78Q58 80 56 66Z"/></svg>'
+};
+const thumbHTML = (o, kind) => kind === 'n'
+  ? `<span class="thumb" style="--tc:${COLORS.madeira}"><span>${esc(o.emoji)}</span></span>`
+  : `<span class="thumb" style="--tc:${firstColor(o)}">${o.photo ? `<img src="${o.photo}" alt="">` : `<span>${esc(o.emoji || '🍽️')}</span>`}</span>`;
+const tagChip = t => `<span class="chip" style="--tc:${tcolor(t)}">${esc(t.emoji)} ${esc(t.name)}</span>`;
+
+/* ---------- cabeçalho ---------- */
+const SUBS = ['Bora cozinhar? 🍜','O que vai ser hoje? 🥢','Barriguinha roncando? 🍙','Mãos à obra, chefs! 🧑‍🍳'];
+const sub = SUBS[Math.floor(Math.random()*SUBS.length)];
+function renderHero(){
+  const now = new Date(); const wk = peekWeek(0); const di = now.getDay();
+  const cell = (k, lab) => { const res = wk && resolve(wk[di][k]);
+    return res ? `<button class="tcell" data-act="slotMenuToday" data-day="${di}" data-meal="${k}"><small>${lab}</small><span class="te">${esc(res.o.emoji || '🍽️')}</span><b>${esc(res.o.name)}</b>${wk[di][k].cook ? avatar(wk[di][k].cook, 20) : ''}</button>`
+               : `<button class="tcell empty" data-act="pickSlot" data-off="0" data-day="${di}" data-meal="${k}"><small>${lab}</small><span class="te">＋</span><b>Escolher</b></button>`; };
+  $('#hero').innerHTML = `
+    <div class="hero-top">
+      <div class="hero-meta"><p class="eyebrow">${DAYS[di]}, ${now.getDate()} de ${MON[now.getMonth()]}</p>
+        <button class="sync s-${SYNC.mode}" data-act="ajustes" aria-label="Ajustes e sincronização"><i></i>${SYNC_LABEL[SYNC.mode]}</button></div>
+      <div class="pair">
+        <button class="av-btn" data-act="avatar" data-who="lucca" aria-label="Foto de ${esc(S.names.lucca)}">${avatar('lucca',54)}</button>
+        <button class="av-btn" data-act="avatar" data-who="izis" aria-label="Foto de ${esc(S.names.izis)}">${avatar('izis',54)}</button>
+      </div>
+    </div>
+    <div><h1 class="hello">Oi, ${esc(S.names.lucca)}<br><span>&amp; ${esc(S.names.izis)}!</span></h1><p class="sub">${sub}</p></div>
+    <section class="today" aria-label="Hoje">${ICON.sprig}
+      <div class="today-h"><span>Hoje em casa · ${DSH[di]} ${now.getDate()}</span><button class="dice" data-act="roleta">🎲 Sortear</button></div>
+      <div class="today-g">${cell('l','Almoço')}${cell('d','Jantar')}</div></section>`;
+}
+
+/* ---------- Cardápio / Favoritos ---------- */
+function filterRecipes(q, tf, favOnly){
+  q = q.trim().toLowerCase();
+  return S.recipes.filter(r => (!favOnly || r.fav)
+    && (!tf.size || r.tags.some(t => tf.has(t)))
+    && (!q || r.name.toLowerCase().includes(q) || r.ingredients.some(i => i.name.toLowerCase().includes(q))))
+    .sort((a,b) => a.name.localeCompare(b.name, 'pt-BR'));
+}
+function recipeCard(r, fav){
+  const t = tagById(r.tags[0]);
+  return `<article class="rcard" data-act="openRecipe" data-id="${r.id}" id="rc-${r.id}" tabindex="0">
+    ${thumbHTML(r,'r')}
+    <button class="heart ${r.fav ? 'on' : ''}" data-act="fav" data-id="${r.id}" aria-pressed="${r.fav}" aria-label="Favoritar">${ICON.heart}</button>
+    <div class="rbody"><h3>${esc(r.name)}</h3>
+      <p class="meta">${ICON.clock} ${r.time ? r.time + ' min' : '—'}${t ? ` · ${esc(t.emoji)} ${esc(t.name)}` : ''}</p></div>
+    ${fav ? `<button class="mini-btn" data-act="addWeek" data-id="${r.id}">+ Pôr na semana</button>` : ''}
+    </article>`;
+}
+function tagbar(set, manage){
+  return `<div class="tagbar">${S.tags.map(t => `<button class="tchip ${set.has(t.id) ? 'on' : ''}" data-act="tf" data-id="${t.id}" style="--tc:${tcolor(t)}">${esc(t.emoji)} ${esc(t.name)}</button>`).join('')}
+    ${manage ? `<button class="tchip ghost" data-act="manageTags">✎ Editar tags</button>` : ''}</div>`;
+}
+function listHTML(fav){
+  const list = fav ? filterRecipes(UI.fq, UI.ftf, true) : filterRecipes(UI.q, UI.tf, false);
+  if (list.length) return list.map(r => recipeCard(r, fav)).join('');
+  const filtering = fav ? (UI.fq || UI.ftf.size) : (UI.q || UI.tf.size);
+  if (filtering) return `<div class="empty-state"><span class="big">🔍</span><h3>Nada por aqui</h3><p>Nenhuma receita com esse filtro.</p></div>`;
+  return fav ? `<div class="empty-state"><span class="big">💚</span><h3>Sem favoritas ainda</h3><p>Toque no coração de uma receita para ela aparecer aqui.</p><button class="pill solid" data-act="tab" data-tab="cardapio">Ver cardápio</button></div>`
+             : `<div class="empty-state"><span class="big">🍳</span><h3>Nenhuma receita</h3><p>Comece pela que vocês mais fazem.</p><button class="pill solid" data-act="newRecipe">+ Nova receita</button></div>`;
+}
+function renderCardapio(){
+  return `<div class="vhead"><div><h2>Cardápio</h2><p>${S.recipes.length} receitas guardadas</p></div>
+      <div class="vh-act"><button class="pill" data-act="roleta" aria-label="Sortear uma receita">🎲</button><button class="pill" data-act="manageTags">🏷️ Tags</button></div></div>
+    <label class="search">${ICON.search}<span class="vh">Buscar</span><input id="q" type="search" placeholder="Buscar receita ou ingrediente" value="${esc(UI.q)}" autocomplete="off"></label>
+    ${tagbar(UI.tf, true)}
+    <div class="list" id="list">${listHTML(false)}</div>`;
+}
+function renderFavoritos(){
+  const n = S.recipes.filter(r => r.fav).length;
+  return `<div class="vhead"><div><h2>Favoritos</h2><p>${n} ${n === 1 ? 'queridinha' : 'queridinhas'} da casa</p></div>
+      <div class="vh-act"><button class="pill" data-act="roleta">🎲 Sortear</button></div></div>
+    <label class="search">${ICON.search}<span class="vh">Buscar</span><input id="fq" type="search" placeholder="Buscar nas favoritas" value="${esc(UI.fq)}" autocomplete="off"></label>
+    ${tagbar(UI.ftf, false)}
+    <div class="list" id="list">${listHTML(true)}</div>`;
+}
+
+/* ---------- Semana ---------- */
+function slotHTML(off, i, k, lab, s){
+  const res = resolve(s);
+  if (!res) return `<button class="slot empty" data-act="pickSlot" data-off="${off}" data-day="${i}" data-meal="${k}" data-drop="${i}-${k}" id="sl-${i}-${k}"><small>${lab}</small><span>+ escolher</span></button>`;
+  const ns = res.kind === 'n';
+  return `<div class="slot filled ${ns ? 'noshop' : ''}" data-drop="${i}-${k}" id="sl-${i}-${k}">
+    <button class="grip" data-grip="${i}-${k}" aria-label="Arrastar para outro dia">⋮⋮</button>
+    <button class="sbody" data-act="slotMenu" data-day="${i}" data-meal="${k}"><small>${lab}</small><span class="sname">${esc(res.o.emoji || '🍽️')} ${esc(res.o.name)}</span>${ns ? '<em class="noshop-tag">sem compras</em>' : ''}</button>
+    ${s.cook ? avatar(s.cook, 24) : ''}</div>`;
+}
+function renderSemana(){
+  const off = UI.wo, wk = getWeek(off), sun = sundayOf(off), today = new Date(); today.setHours(0,0,0,0);
+  const planned = wk.reduce((n, d) => n + (resolve(d.l) ? 1 : 0) + (resolve(d.d) ? 1 : 0), 0);
+  const rel = off === 0 ? 'Esta semana' : off === 1 ? 'Próxima semana' : off === -1 ? 'Semana passada' : (off > 0 ? `Daqui a ${off} semanas` : `${-off} semanas atrás`);
+  return `<div class="vhead"><div><h2>Semana</h2><p>${planned} de 14 refeições planejadas</p></div></div>
+    <div class="weeknav"><button class="navbtn" data-act="wk" data-d="-1" aria-label="Semana anterior">‹</button>
+      <div><strong>${weekLabel(off)}</strong><small>${rel}</small></div>
+      <button class="navbtn" data-act="wk" data-d="1" aria-label="Próxima semana">›</button></div>
+    <div class="actions"><button class="pill" data-act="repeatWeek">↻ Repetir semana passada</button><button class="pill" data-act="clearWeek">Limpar semana</button></div>
+    <div class="days">${wk.map((d, i) => { const date = addDays(sun, i), isT = date.getTime() === today.getTime();
+      return `<section class="day ${isT ? 'today' : ''}" aria-label="${DAYS[i]}${isT ? ', hoje' : ''}"><div class="dhead"><span class="ddate">${isT ? 'Hoje' : DSH[i]}</span><span class="dname">${date.getDate()}</span></div>
+        <div class="slots">${MEALS.map(([k, lab]) => slotHTML(off, i, k, lab, d[k])).join('')}</div></section>`; }).join('')}</div>
+    <button class="linkbtn" data-act="manageNoshop">🍱 Editar refeições sem compra</button>`;
+}
+
+/* ---------- Mercado ---------- */
+const BASE = {g:['g',1], kg:['g',1000], ml:['ml',1], un:['un',1], 'xícara':['xícara',1], colher:['colher',1]};
+const nf = n => n.toLocaleString('pt-BR', {maximumFractionDigits:2});
+function qtyText(q, u){
+  if (!q) return '';
+  if (u === 'g' && q >= 1000) return nf(q/1000) + ' kg';
+  if (u === 'ml' && q >= 1000) return nf(q/1000) + ' L';
+  if (u === 'xícara') return nf(q) + (q > 1 ? ' xícaras' : ' xícara');
+  if (u === 'colher') return nf(q) + (q > 1 ? ' colheres' : ' colher');
+  return nf(q) + ' ' + u;
+}
+function buildList(off){
+  const wk = peekWeek(off) || emptyWeek(); const map = new Map();
+  wk.forEach(d => MEALS.forEach(([k]) => { const res = resolve(d[k]); if (!res || res.kind !== 'r') return;
+    res.o.ingredients.forEach(ing => { const nm = ing.name.trim(); if (!nm) return;
+      const [bu, f] = BASE[ing.unit] || [ing.unit || 'un', 1];
+      const key = nm.toLowerCase() + '|' + bu;
+      let it = map.get(key); if (!it) { it = {key, name:nm, unit:bu, qty:0, cat:ing.cat || 'outros', from:new Map()}; map.set(key, it); }
+      it.qty += (parseFloat(String(ing.qty).replace(',', '.')) || 0) * f;
+      it.from.set(res.o.name, (it.from.get(res.o.name) || 0) + 1); }); }));
+  return [...map.values()];
+}
+function mkt(off){ const k = wkey(sundayOf(off)); if (!S.market[k]) S.market[k] = {checked:{}, extras:[]}; return S.market[k]; }
+function marketData(off){
+  const m = mkt(off); const items = buildList(off).map(it => ({key:it.key, name:it.name, qty:qtyText(it.qty, it.unit), cat:it.cat,
+    from:[...it.from].map(([n, c]) => c > 1 ? `${n} ×${c}` : n).join(', '), extra:false}));
+  m.extras.forEach(x => items.push({key:'x:' + x.id, id:x.id, name:x.name, qty:x.qty, cat:x.cat, from:'item avulso', extra:true}));
+  const groups = CATS.map(c => ({c, items:items.filter(i => i.cat === c.id).sort((a,b) => a.name.localeCompare(b.name,'pt-BR'))})).filter(g => g.items.length);
+  const done = items.filter(i => m.checked[i.key]).length;
+  return {m, items, groups, done};
+}
+function shareText(off){
+  const {m, groups} = marketData(off);
+  return `🛒 Mercado · ${weekLabel(off)}\n` + groups.map(g => `\n${g.c.emoji} ${g.c.name}\n` + g.items.map(i => `${m.checked[i.key] ? '✅' : '▫️'} ${i.name}${i.qty ? ' — ' + i.qty : ''}`).join('\n')).join('\n');
+}
+function renderMercado(){
+  const off = UI.wo; const {m, items, groups, done} = marketData(off);
+  const recipesInWeek = buildList(off).length > 0;
+  const pct = items.length ? Math.round(done / items.length * 100) : 0;
+  const head = `<div class="vhead"><div><h2>Mercado</h2><p>Lista da semana ${weekLabel(off)}</p></div></div>`;
+  const prog = items.length ? `<div class="progress-card"><div class="row"><span id="pg-msg">${done === items.length ? 'Tudo no carrinho! 🎉' : 'No carrinho'}</span><span id="pg-n">${done}<small>/${items.length}</small></span></div><div class="bar"><i id="pg-bar" style="width:${pct}%"></i></div>
+      <div class="actions"><button class="pill" data-act="copyList">Copiar lista</button><a class="pill" data-act="shareWa" href="#" target="_blank" rel="noopener">WhatsApp</a></div></div>` : '';
+  const empty = !recipesInWeek ? `<div class="empty-state"><span class="big">🧺</span><h3>Lista vazia</h3><p>Escolha receitas na semana e os ingredientes aparecem aqui sozinhos.</p><button class="pill solid" data-act="tab" data-tab="semana">Planejar semana</button></div>` : '';
+  const catOpts = CATS.map(c => `<option value="${c.id}">${c.emoji} ${c.name}</option>`).join('');
+  return `${head}${prog}${empty}
+    ${groups.map(g => `<section class="group"><h3>${g.c.emoji} ${g.c.name} <small>${g.items.length}</small></h3><ul class="items">${g.items.map(i =>
+      `<li class="item ${m.checked[i.key] ? 'done' : ''}"><button class="check" data-act="check" data-k="${esc(i.key)}" aria-pressed="${!!m.checked[i.key]}" aria-label="Marcar ${esc(i.name)}">${ICON.tick}</button>
+        <div class="iname"><span>${esc(i.name)}</span><small>${esc(i.from)}</small></div><span class="iqty">${esc(i.qty)}</span>
+        ${i.extra ? `<button class="x" data-act="delExtra" data-id="${i.id}" aria-label="Remover">×</button>` : ''}</li>`).join('')}</ul></section>`).join('')}
+    <form class="addx" id="addx" autocomplete="off">
+      <input class="inp" id="xname" placeholder="Item avulso (ex: papel toalha)" aria-label="Item avulso">
+      <input class="inp" id="xqty" placeholder="Qtd" aria-label="Quantidade">
+      <div class="full"><select class="inp" id="xcat" aria-label="Seção">${catOpts.replace('value="outros"', 'value="outros" selected')}</select><button class="pill solid" type="submit">+ Adicionar</button></div>
+    </form>`;
+}
+
+/* ---------- render ---------- */
+function updateCount(){ const {items, done} = marketData(0); const left = items.length - done; const c = $('#mcount');
+  c.hidden = !left; c.textContent = left; }
+function render(){
+  renderHero();
+  const v = $('#view');
+  v.innerHTML = `<div class="view">${({cardapio:renderCardapio, favoritos:renderFavoritos, semana:renderSemana, mercado:renderMercado})[UI.tab]()}</div>`;
+  document.querySelectorAll('.tab').forEach(b => { if (b.dataset.tab === UI.tab) b.setAttribute('aria-current','page'); else b.removeAttribute('aria-current'); });
+  $('#fab').hidden = UI.tab !== 'cardapio';
+  updateCount();
+}
+function setTab(t){ if (UI.tab === t) return; UI.tab = t; try { history.replaceState(null, '', '#' + t); } catch(e) {} render(); scrollTo({top:0}); }
+function bounce(sel){ requestAnimationFrame(() => { const el = typeof sel === 'string' ? document.querySelector(sel) : sel; if (!el) return; el.classList.remove('bounce'); void el.offsetWidth; el.classList.add('bounce'); }); }
+
+/* ---------- sheet ---------- */
+let sheetFn = null;
+function openSheet(fn){ sheetFn = fn; const w = $('#sheet'); $('#sb').innerHTML = fn(); w.hidden = false; $('#sb').scrollTop = 0;
+  requestAnimationFrame(() => requestAnimationFrame(() => w.classList.add('open'))); }
+function refreshSheet(){ if (!sheetFn) return; const sb = $('#sb'), st = sb.scrollTop; sb.innerHTML = sheetFn(); sb.scrollTop = st; }
+function closeSheet(){ const w = $('#sheet'); w.classList.remove('open'); sheetFn = null; ED = null;
+  setTimeout(() => { if (!sheetFn) { w.hidden = true; $('#sb').innerHTML = ''; } }, 300); }
+
+let toastT = null;
+function toast(msg){ const t = $('#toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('show'), 2200); }
+function armed(el){ if (el.dataset.armed) return true; const txt = el.textContent; el.dataset.armed = '1'; el.classList.add('armed'); el.textContent = el.dataset.confirm || 'Toque de novo para confirmar';
+  setTimeout(() => { if (el.isConnected) { delete el.dataset.armed; el.classList.remove('armed'); el.textContent = txt; } }, 3000); return false; }
+
+function cookRow(cur, act){
+  return `<div class="cook" role="group" aria-label="Quem cozinha">${PEOPLE.map(p => `<button class="${cur === p ? 'on' : ''}" data-act="${act}" data-who="${p}">${avatar(p, 30)} ${esc(S.names[p])}</button>`).join('')}
+    <button class="none ${!cur ? 'on' : ''}" data-act="${act}" data-who="">Ninguém</button></div>`;
+}
+
+/* seletor de refeição para um horário */
+let PK = null;
+function pickerHTML(){
+  const {off, day, meal} = PK; const lab = MEALS.find(m => m[0] === meal)[1];
+  const q = PK.q.trim().toLowerCase();
+  let opts;
+  if (PK.seg === 'n') opts = S.noshop.filter(n => !q || n.name.toLowerCase().includes(q)).map(n => `<button class="opt ns" data-act="assign" data-t="n" data-id="${n.id}">${thumbHTML(n,'n')}<span><b>${esc(n.name)}</b><small>sem compras</small></span></button>`);
+  else opts = filterRecipes(PK.q, new Set(), PK.seg === 'f').map(r => `<button class="opt" data-act="assign" data-t="r" data-id="${r.id}">${thumbHTML(r,'r')}<span><b>${esc(r.name)}</b><small>${r.time ? r.time + ' min · ' : ''}${r.ingredients.length} ingredientes</small></span></button>`);
+  return `<h2>${lab} de ${DAYS[day].toLowerCase()}</h2><p class="subt">${weekLabel(off)}</p>
+    <div><p class="sec-t" style="margin:0 0 8px;font-size:15px">Quem cozinha?</p>${cookRow(PK.cook, 'pkCook')}</div>
+    <div class="seg" role="tablist">${[['r','Receitas'],['f','Favoritas'],['n','Sem compra']].map(([k, l]) => `<button class="${PK.seg === k ? 'on' : ''}" data-act="pkSeg" data-seg="${k}">${l}</button>`).join('')}</div>
+    <label class="search">${ICON.search}<span class="vh">Buscar</span><input id="pq" type="search" placeholder="Buscar" value="${esc(PK.q)}" autocomplete="off"></label>
+    <div class="opt-list" id="plist">${opts.join('') || `<p class="subt" style="margin:0">Nada encontrado.</p>`}</div>
+    ${PK.seg === 'n' ? `<button class="add-line" data-act="manageNoshop">✎ Editar refeições sem compra</button>` : ''}`;
+}
+function openPicker(off, day, meal){ const cur = getWeek(off)[day][meal]; PK = {off, day, meal, seg:'r', q:'', cook:cur?.cook ?? null}; openSheet(pickerHTML); }
+
+function slotMenuHTML(){
+  const {day, meal} = SM; const s = getWeek(UI.wo)[day][meal]; const res = resolve(s); if (!res) return '';
+  const lab = MEALS.find(m => m[0] === meal)[1];
+  return `<h2>${esc(res.o.emoji || '🍽️')} ${esc(res.o.name)}</h2><p class="subt">${lab} de ${DAYS[day].toLowerCase()}${res.kind === 'n' ? ' · sem compras' : ''}</p>
+    <div><p class="sec-t" style="margin:0 0 8px;font-size:15px">Quem cozinha?</p>${cookRow(s.cook, 'smCook')}</div>
+    <div class="btn-row">${res.kind === 'r' ? `<button class="btn" data-act="openRecipe" data-id="${res.o.id}">Ver receita</button>` : ''}<button class="btn" data-act="smSwap">Trocar</button></div>
+    <button class="btn danger" data-act="smRemove">Tirar do dia</button>
+    <p class="subt" style="margin:0;text-align:center">Dica: segure o ⋮⋮ e arraste para mudar de dia.</p>`;
+}
+let SM = null;
+
+/* detalhe da receita */
+function detailHTML(id){
+  const r = S.recipes.find(x => x.id === id); if (!r) return '<p>Receita não encontrada.</p>';
+  const tags = r.tags.map(tagById).filter(Boolean);
+  return `<div class="detail-hero" style="--tc:${firstColor(r)}">${r.photo ? `<img src="${r.photo}" alt="">` : esc(r.emoji || '🍽️')}</div>
+    <h2>${esc(r.name)}</h2>
+    <p class="meta" style="margin-top:-8px">${ICON.clock} ${r.time ? r.time + ' min' : 'tempo não informado'}</p>
+    ${tags.length ? `<div class="chips">${tags.map(tagChip).join('')}</div>` : ''}
+    <div class="btn-row"><button class="btn solid" data-act="addWeek" data-id="${r.id}">+ Semana</button>
+      <button class="btn" data-act="fav" data-id="${r.id}" data-inside="1">${r.fav ? '♥ Favorita' : '♡ Favoritar'}</button></div>
+    <div><p class="sec-t" style="margin:0 0 8px">Ingredientes</p>${r.ingredients.length ? `<ul class="ing-list">${r.ingredients.map(i => `<li><span>${esc(i.name)}</span><span>${esc(qtyText(parseFloat(String(i.qty).replace(',','.')) || 0, i.unit))}</span></li>`).join('')}</ul>` : '<p class="subt" style="margin:0">Sem ingredientes.</p>'}</div>
+    <div><p class="sec-t" style="margin:0 0 10px">Modo de preparo</p>${r.steps.length ? `<ol class="steps">${r.steps.map(s => `<li><span>${esc(s)}</span></li>`).join('')}</ol>` : '<p class="subt" style="margin:0">Sem passos ainda.</p>'}</div>
+    <div class="btn-row"><button class="btn" data-act="editRecipe" data-id="${r.id}">Editar</button><button class="btn danger" data-act="delRecipe" data-id="${r.id}">Excluir</button></div>`;
+}
+
+/* adicionar receita a um dia */
+let AW = null;
+function addWeekHTML(){
+  const r = S.recipes.find(x => x.id === AW.id); const wk = getWeek(AW.off);
+  const cell = (i, k, lab) => { const res = resolve(wk[i][k]);
+    return `<button class="${res ? '' : 'free'}" data-act="awPut" data-day="${i}" data-meal="${k}"><b>${lab}</b>${res ? esc(res.o.name) : 'livre'}</button>`; };
+  return `<h2>${esc(r.emoji)} ${esc(r.name)}</h2><p class="subt">Escolha o dia · ${weekLabel(AW.off)}</p>
+    <div class="weeknav"><button class="navbtn" data-act="awWk" data-d="-1" aria-label="Semana anterior">‹</button><div><strong>${weekLabel(AW.off)}</strong></div><button class="navbtn" data-act="awWk" data-d="1" aria-label="Próxima semana">›</button></div>
+    <div><p class="sec-t" style="margin:0 0 8px;font-size:15px">Quem cozinha?</p>${cookRow(AW.cook, 'awCook')}</div>
+    <div class="wk-grid">${DAYS.map((d, i) => `<div class="wk-row"><span>${DSH[i]} ${addDays(sundayOf(AW.off), i).getDate()}</span>${cell(i,'l','Almoço')}${cell(i,'d','Jantar')}</div>`).join('')}</div>`;
+}
+
+/* editor de receita */
+let ED = null;
+const blankIng = () => ({name:'', qty:'', unit:'un', cat:'outros', catSet:false});
+function editorHTML(){
+  const d = ED; const opt = (arr, cur) => arr.map(([v, l]) => `<option value="${v}" ${v === cur ? 'selected' : ''}>${l}</option>`).join('');
+  return `<h2>${d.id ? 'Editar receita' : 'Nova receita'}</h2>
+    <div class="ed-top">
+      <button class="photo-pick" data-act="edPhoto" aria-label="Escolher foto">${d.photo ? `<img src="${d.photo}" alt="">` : `<span>${esc(d.emoji || '🍽️')}</span>`}<small>${d.photo ? 'trocar' : '+ foto'}</small></button>
+      <div style="display:grid;gap:8px;min-width:0">
+        <label class="field">Nome<input id="ed-name" data-f="name" value="${esc(d.name)}" placeholder="Ex: Strogonoff da Izis" autocomplete="off"></label>
+        <div class="two"><label class="field">Emoji<input id="ed-emoji" data-f="emoji" value="${esc(d.emoji)}" maxlength="4" style="text-align:center"></label>
+          <label class="field">Tempo (min)<input id="ed-time" data-f="time" value="${esc(d.time)}" inputmode="numeric" placeholder="30"></label></div>
+      </div>
+    </div>
+    ${d.photo ? `<button class="add-line" data-act="edPhotoDel" style="margin-top:-6px">Remover foto</button>` : ''}
+    <p class="err" id="ed-err" hidden>Dê um nome para a receita.</p>
+    <div><p class="sec-t" style="margin:0 0 8px">Tags</p><div class="chips" style="gap:8px">${S.tags.map(t => `<button class="tchip ${d.tags.includes(t.id) ? 'on' : ''}" data-act="edTag" data-id="${t.id}" style="--tc:${tcolor(t)}">${esc(t.emoji)} ${esc(t.name)}</button>`).join('')}
+</div>
+      <div class="newtag" style="margin-top:10px">${newTagInputs()}<button class="pill solid" data-act="edNewTag">Criar</button></div></div>
+    <div style="display:grid;gap:8px"><p class="sec-t" style="margin:0">Ingredientes <small style="font-family:var(--f-body);font-size:12px;color:var(--ink-soft)">${d.ingredients.length}</small></p>
+      ${d.ingredients.map((g, i) => `<div class="ing" data-i="${i}">
+        <div class="ing-r1"><input class="inp" id="ed-ing-${i}-name" data-f="ing.${i}.name" value="${esc(g.name)}" placeholder="Ingrediente" aria-label="Ingrediente ${i+1}" autocomplete="off"><button class="icon-btn" data-act="edIngDel" data-i="${i}" aria-label="Remover ingrediente">×</button></div>
+        <div class="ing-r2"><input class="inp" id="ed-ing-${i}-qty" data-f="ing.${i}.qty" value="${esc(g.qty)}" inputmode="decimal" placeholder="Qtd" aria-label="Quantidade">
+          <select class="inp" id="ed-ing-${i}-unit" data-f="ing.${i}.unit" aria-label="Unidade">${opt(UNITS.map(u => [u, u]), g.unit)}</select>
+          <select class="inp" id="ed-ing-${i}-cat" data-f="ing.${i}.cat" aria-label="Seção do mercado">${opt(CATS.map(c => [c.id, c.emoji + ' ' + c.name]), g.cat)}</select></div></div>`).join('')}
+      <button class="add-line" data-act="edIngAdd">+ ingrediente</button></div>
+    <div style="display:grid;gap:10px"><p class="sec-t" style="margin:0">Modo de preparo</p>
+      ${d.steps.map((s, i) => `<div class="step-ed"><span class="n">${i+1}</span><textarea class="inp" id="ed-step-${i}" data-f="step.${i}" rows="2" placeholder="Descreva o passo" aria-label="Passo ${i+1}">${esc(s)}</textarea>
+        <div class="step-ctl"><button class="icon-btn" data-act="edStepMv" data-i="${i}" data-d="-1" ${i === 0 ? 'disabled' : ''} aria-label="Subir">↑</button><button class="icon-btn" data-act="edStepMv" data-i="${i}" data-d="1" ${i === d.steps.length-1 ? 'disabled' : ''} aria-label="Descer">↓</button><button class="icon-btn" data-act="edStepDel" data-i="${i}" aria-label="Remover passo">×</button></div></div>`).join('')}
+      <button class="add-line" data-act="edStepAdd">+ passo</button></div>
+    <div class="sticky-foot"><button class="btn" data-act="closeSheet">Cancelar</button><button class="btn solid" data-act="edSave">Salvar receita</button></div>`;
+}
+function openEditor(id){
+  const r = id && S.recipes.find(x => x.id === id);
+  ED = r ? JSON.parse(JSON.stringify({...r, ingredients:r.ingredients.map(i => ({...i, catSet:true}))}))
+         : {id:null, name:'', emoji:'🍽️', photo:null, time:'', tags:[], fav:false, ingredients:[blankIng(), blankIng(), blankIng()], steps:['']};
+  ED.time = ED.time ?? '';
+  openSheet(editorHTML);
+  if (!r) setTimeout(() => $('#ed-name')?.focus(), 350);
+}
+
+/* tags e refeições sem compra */
+const newTagInputs = () => `<input class="inp emo" id="nt-emoji" value="🏷️" maxlength="4" aria-label="Emoji da nova tag"><input class="inp" id="nt-name" placeholder="Nova tag (ex: Vegetariano)" aria-label="Nome da nova tag" autocomplete="off">`;
+function tagsHTML(){
+  return `<h2>Tags</h2><p class="subt">Crie, edite ou exclua. As mudanças salvam sozinhas.</p>
+    <div class="newtag">${newTagInputs()}<button class="pill solid" data-act="mgNewTag">Criar</button></div>
+    ${S.tags.length ? '' : '<p class="subt" style="margin:0">Nenhuma tag ainda.</p>'}
+    ${S.tags.map((t, i) => { const n = S.recipes.filter(r => r.tags.includes(t.id)).length;
+      return `<div class="tagrow"><div class="mrow"><input class="inp emo" id="tg-${t.id}-e" data-tg="${i}.emoji" value="${esc(t.emoji)}" maxlength="4" aria-label="Emoji"><input class="inp" id="tg-${t.id}-n" data-tg="${i}.name" value="${esc(t.name)}" aria-label="Nome da tag"><button class="del-btn" data-act="delTag" data-id="${t.id}" data-confirm="Confirmar">Excluir</button></div>
+      <div class="swatches">${Object.entries(COLORS).map(([k, c]) => `<button class="sw ${t.color === k ? 'on' : ''}" style="--c:${c}" data-act="tagColor" data-id="${t.id}" data-c="${k}" aria-label="Cor ${k}"></button>`).join('')}</div>
+      <span class="tag-use">${n ? `Em ${n} ${n === 1 ? 'receita' : 'receitas'}` : 'Em nenhuma receita'}</span></div>`; }).join('')}`;
+}
+function noshopHTML(){
+  return `<h2>Refeições sem compra</h2><p class="subt">Aparecem na semana, mas não entram na lista do mercado.</p>
+    ${S.noshop.map((n, i) => `<div class="mrow"><input class="inp emo" id="ns-${n.id}-e" data-ns="${i}.emoji" value="${esc(n.emoji)}" maxlength="4" aria-label="Emoji"><input class="inp" id="ns-${n.id}-n" data-ns="${i}.name" value="${esc(n.name)}" aria-label="Nome"><button class="del-btn" data-act="delNs" data-id="${n.id}" data-confirm="Confirmar">Excluir</button></div>`).join('')}
+    <button class="add-line" data-act="addNs">+ nova refeição sem compra</button>`;
+}
+/* roleta */
+let RL = null;
+function roletaPool(){ const favs = S.recipes.filter(r => r.fav); return RL.all || favs.length < 2 ? S.recipes : favs; }
+function roletaHTML(){
+  const r = RL.cur, onlyAll = S.recipes.filter(x => x.fav).length < 2;
+  return `<h2>O que fazer hoje?</h2><p class="subt">${RL.all || onlyAll ? 'Sorteando entre todas as receitas' : 'Sorteando entre as favoritas'}</p>
+    <div class="roleta ${RL.spinning ? 'spin' : 'landed'}" id="rl"><span class="rl-emoji" id="rl-emoji">${r ? esc(r.emoji || '🍽️') : '🎲'}</span><b id="rl-name">${r ? esc(r.name) : ''}</b></div>
+    ${!onlyAll ? `<div class="seg"><button class="${RL.all ? '' : 'on'}" data-act="rlPool" data-all="">Favoritas</button><button class="${RL.all ? 'on' : ''}" data-act="rlPool" data-all="1">Todas</button></div>` : ''}
+    ${RL.spinning || !r ? '' : `<div class="btn-row"><button class="btn solid" data-act="rlPut" data-meal="d">Jantar de hoje</button><button class="btn" data-act="rlPut" data-meal="l">Almoço de hoje</button></div>
+    <div class="btn-row"><button class="btn" data-act="rlSpin">🎲 De novo</button><button class="btn" data-act="openRecipe" data-id="${r.id}">Ver receita</button></div>`}`;
+}
+function spin(){
+  const pool = roletaPool(); if (!pool.length) { toast('Cadastre uma receita primeiro'); return; }
+  let pick = pool[Math.floor(Math.random() * pool.length)];
+  if (pool.length > 1) while (RL.cur && pick.id === RL.cur.id) pick = pool[Math.floor(Math.random() * pool.length)];
+  if (reduced) { RL.cur = pick; RL.spinning = false; refreshSheet(); return; }
+  RL.spinning = true; refreshSheet();
+  let i = 0, delay = 60; const total = 16;
+  const step = () => { if (!sheetFn || sheetFn !== roletaHTML) return;
+    if (i++ < total) { const r = pool[(Math.random() * pool.length) | 0];
+      const e = $('#rl-emoji'), n = $('#rl-name'); if (e) e.textContent = r.emoji || '🍽️'; if (n) n.textContent = r.name;
+      delay *= 1.15; setTimeout(step, delay); }
+    else { RL.cur = pick; RL.spinning = false; refreshSheet(); } };
+  step();
+}
+/* ajustes, sincronização e backup */
+const SYNC_LABEL = {local:'Só neste celular', nocasa:'Conectar a casa', connecting:'Conectando…', empty:'Ligar sincronização', on:'Sincronizado', readonly:'Só leitura', error:'Sem conexão'};
+const CASA_KEY = 'cozinha-casa';
+function getCasa(){ try { return localStorage.getItem(CASA_KEY) || ''; } catch(e) { return ''; } }
+function setCasa(c){ try { c ? localStorage.setItem(CASA_KEY, c) : localStorage.removeItem(CASA_KEY); } catch(e) {} }
+const validCasa = c => /^[a-z0-9-]{16,64}$/.test(c);
+function newCasa(){ const a = 'abcdefghjkmnpqrstuvwxyz23456789'; let c = 'casa-'; const r = crypto.getRandomValues(new Uint8Array(14)); r.forEach(x => c += a[x % a.length]); return c; }
+const inviteLink = () => location.origin + location.pathname + '?casa=' + encodeURIComponent(getCasa());
+function ajustesHTML(){
+  const m = SYNC.mode;
+  const syncTxt = {
+    local:'Este endereço guarda os dados só neste aparelho.',
+    nocasa:'Crie o código da casa neste celular e mande o convite para a Izis. Se ela já criou, cole o código que ela mandou.',
+    connecting:'Conectando…',
+    empty:'A sincronização ainda não foi ligada. Ao ligar, as receitas, a semana e o mercado deste celular passam a ser os dados dos dois. Faça isso no celular que tem os dados certos.',
+    on:'Tudo o que um de vocês muda aparece no celular do outro em poucos segundos.',
+    readonly:'Você pode ver tudo, mas não alterar. Peça para o dono do app te dar acesso de editor.',
+    error:'Não consegui falar com a nuvem agora. As mudanças continuam salvas neste celular.'
+  }[m];
+  return `<h2>Ajustes</h2>
+    <section class="set-sec"><h3>☁️ Sincronização</h3><p>${syncTxt}</p>
+      ${m === 'empty' ? `<button class="btn solid" data-act="initSync">Ligar sincronização</button>` : ''}
+      ${m === 'nocasa' ? `<button class="btn solid" data-act="casaNew">Criar código da casa</button>
+        <div class="newtag"><input class="inp" id="casa-in" placeholder="casa-xxxxxxxxxxxxxx" autocomplete="off" autocapitalize="off" aria-label="Código da casa"><button class="pill" data-act="casaJoin">Entrar</button></div>` : ''}
+      ${SYNC.backend === 'firebase' && getCasa() ? `<p>Código da casa: <b style="color:var(--ink);user-select:all">${esc(getCasa())}</b></p>
+        <div class="btn-row"><button class="btn" data-act="casaCopy">Copiar convite</button><a class="btn" data-act="casaWa" href="#" target="_blank" rel="noopener">WhatsApp</a></div>
+        <button class="btn danger" data-act="casaLeave" data-confirm="Toque para confirmar">Sair desta casa</button>` : ''}</section>
+    <section class="set-sec"><h3>🗂️ Organizar</h3>
+      <div class="btn-row"><button class="btn" data-act="manageTags">🏷️ Tags</button><button class="btn" data-act="manageNoshop">🍱 Sem compra</button></div></section>
+    <section class="set-sec"><h3>💾 Backup</h3><p>Guarde uma cópia de tudo: ${S.recipes.length} receitas, tags, semanas e listas.</p>
+      <div class="btn-row"><button class="btn solid" data-act="bkSave">Baixar backup</button><button class="btn" data-act="bkCopy">Copiar backup</button></div>
+      <button class="btn" data-act="bkRestore">Restaurar de um arquivo</button>
+      <textarea class="inp" id="bk-paste" rows="3" placeholder="Ou cole aqui o texto de um backup"></textarea>
+      <button class="btn" data-act="bkPaste">Restaurar texto colado</button></section>`;
+}
+let RESTORE = null;
+function restoreHTML(){
+  const d = RESTORE, when = d.exportedAt ? new Date(d.exportedAt) : null;
+  return `<h2>Restaurar backup</h2>
+    <section class="set-sec"><h3>${d.recipes.length} receitas · ${d.tags.length} tags</h3>
+      <p>${when && !isNaN(when) ? `Backup de ${when.getDate()}/${String(when.getMonth()+1).padStart(2,'0')}/${when.getFullYear()}. ` : ''}Isso substitui tudo o que está no app agora${SYNC.mode === 'on' ? ', também no celular do outro' : ''}.</p></section>
+    <div class="btn-row"><button class="btn" data-act="ajustes">Cancelar</button><button class="btn danger" data-act="bkApply" data-confirm="Toque para confirmar">Substituir tudo</button></div>`;
+}
+function backupText(){ return JSON.stringify({app:'cozinha-lucca-izis', exportedAt:new Date().toISOString(), ...S}); }
+function parseBackup(txt){ try { const d = JSON.parse(txt);
+  if (d && Array.isArray(d.recipes) && Array.isArray(d.tags) && Array.isArray(d.noshop) && d.weeks && typeof d.weeks === 'object') return d; } catch(e) {}
+  return null; }
+function showCopyBox(title, txt){ openSheet(() => `<h2>${title}</h2><p class="subt">Selecione o texto e copie.</p><textarea class="inp copybox" id="copybox" readonly>${esc(txt)}</textarea>`); setTimeout(() => $('#copybox')?.select(), 350); }
+
+function avatarHTML(){
+  const w = AV; return `<h2>${esc(S.names[w])}</h2><p class="subt">Toque em trocar foto para usar outra imagem.</p>
+    <div class="av-preview">${avatar(w, 150)}</div>
+    <label class="field">Nome<input id="av-name" data-avname="${w}" value="${esc(S.names[w])}"></label>
+    <div class="btn-row"><button class="btn solid" data-act="avPick">Trocar foto</button>${S.avatars[w] ? `<button class="btn" data-act="avDel">Voltar ao chibi</button>` : ''}</div>`;
+}
+let AV = null;
+
+function newTagFromInputs(){
+  const name = ($('#nt-name')?.value || '').trim(); if (!name) { $('#nt-name')?.focus(); toast('Dê um nome para a tag'); return null; }
+  if (S.tags.some(t => t.name.toLowerCase() === name.toLowerCase())) { toast('Já existe uma tag com esse nome'); return null; }
+  const keys = Object.keys(COLORS); const t = {id:uid(), name, emoji:($('#nt-emoji')?.value || '🏷️').trim() || '🏷️', color:keys[S.tags.length % keys.length]};
+  S.tags.push(t); save(); return t;
+}
+/* ---------- imagens ---------- */
+function readImage(file, max, type){ return new Promise((res, rej) => { const fr = new FileReader();
+  fr.onload = () => { const img = new Image(); img.onload = () => {
+    const sc = Math.min(1, max / Math.max(img.width, img.height)); const c = document.createElement('canvas');
+    if (type === 'square') { const s = Math.min(img.width, img.height), out = Math.min(max, s); c.width = c.height = out;
+      c.getContext('2d').drawImage(img, (img.width-s)/2, (img.height-s)/2, s, s, 0, 0, out, out); res(c.toDataURL('image/jpeg', .85)); return; }
+    c.width = Math.round(img.width*sc); c.height = Math.round(img.height*sc); c.getContext('2d').drawImage(img, 0, 0, c.width, c.height); res(c.toDataURL('image/jpeg', .76)); };
+    img.onerror = rej; img.src = fr.result; };
+  fr.onerror = rej; fr.readAsDataURL(file); }); }
+let onPick = null;
+$('#filePick').addEventListener('change', async e => { const f = e.target.files[0]; e.target.value = ''; if (!f || !onPick) return;
+  try { await onPick(f); } catch(err) { toast('Não consegui abrir essa imagem'); } });
+function pickFile(fn, accept){ onPick = fn; const fp = $('#filePick'); fp.accept = accept || 'image/*'; fp.click(); }
+
+/* ---------- confete ---------- */
+function confetti(){
+  if (reduced) return; const c = $('#confetti'), ctx = c.getContext('2d'), dpr = devicePixelRatio || 1;
+  c.width = innerWidth*dpr; c.height = innerHeight*dpr; ctx.scale(dpr, dpr);
+  const cols = ['#A3B18A','#3A5A40','#C8A97E','#E9E2D0','#D9705A'];
+  const P = Array.from({length:70}, () => ({x:innerWidth/2 + (Math.random()-.5)*80, y:innerHeight*.55, vx:(Math.random()-.5)*9, vy:-Math.random()*11-5, r:Math.random()*6+4, a:Math.random()*6, va:(Math.random()-.5)*.3, c:cols[Math.random()*cols.length|0]}));
+  const t0 = performance.now();
+  (function f(t){ ctx.clearRect(0, 0, innerWidth, innerHeight); const k = (t - t0) / 1800;
+    P.forEach(p => { p.vy += .32; p.x += p.vx; p.y += p.vy; p.a += p.va; ctx.save(); ctx.globalAlpha = Math.max(0, 1 - k); ctx.translate(p.x, p.y); ctx.rotate(p.a); ctx.fillStyle = p.c; ctx.fillRect(-p.r/2, -p.r/4, p.r, p.r/2); ctx.restore(); });
+    if (k < 1) requestAnimationFrame(f); else ctx.clearRect(0, 0, innerWidth, innerHeight); })(t0);
+}
+
+/* ---------- ações ---------- */
+const A = {
+  tab: el => { closeSheet(); setTab(el.dataset.tab); },
+  closeSheet,
+  newRecipe: () => openEditor(null),
+  openRecipe: el => openSheet(() => detailHTML(el.dataset.id)),
+  editRecipe: el => openEditor(el.dataset.id),
+  fav: el => { const r = S.recipes.find(x => x.id === el.dataset.id); r.fav = !r.fav; save();
+    if (el.dataset.inside) { refreshSheet(); render(); toast(r.fav ? 'Favoritada 💚' : 'Saiu dos favoritos'); return; }
+    el.classList.toggle('on', r.fav); el.setAttribute('aria-pressed', r.fav); el.classList.remove('pop'); void el.offsetWidth; el.classList.add('pop');
+    if (UI.tab === 'favoritos') setTimeout(render, 380); },
+  delRecipe: el => { if (!armed(el)) return; const id = el.dataset.id;
+    S.recipes = S.recipes.filter(r => r.id !== id);
+    Object.values(S.weeks).forEach(w => w.forEach(d => MEALS.forEach(([k]) => { if (d[k]?.t === 'r' && d[k].id === id) d[k] = null; })));
+    save(); closeSheet(); render(); toast('Receita excluída'); },
+  tf: el => { const set = UI.tab === 'favoritos' ? UI.ftf : UI.tf; const id = el.dataset.id; set.has(id) ? set.delete(id) : set.add(id);
+    el.classList.toggle('on'); $('#list').innerHTML = listHTML(UI.tab === 'favoritos'); },
+  manageTags: () => openSheet(tagsHTML),
+  edNewTag: () => { const t = newTagFromInputs(); if (!t) return; ED.tags.push(t.id); refreshSheet(); toast(`Tag ${t.emoji} ${t.name} criada`); },
+  mgNewTag: () => { const t = newTagFromInputs(); if (!t) return; refreshSheet(); render(); toast(`Tag ${t.emoji} ${t.name} criada`); },
+  roleta: () => { RL = {cur:null, spinning:false, all:false}; openSheet(roletaHTML); spin(); },
+  rlSpin: () => spin(),
+  rlPool: el => { RL.all = !!el.dataset.all; RL.cur = null; spin(); },
+  rlPut: el => { const di = new Date().getDay(), meal = el.dataset.meal; getWeek(0)[di][meal] = {t:'r', id:RL.cur.id, cook:null}; save(); closeSheet(); render();
+    toast(`${RL.cur.emoji || '🍽️'} no ${meal === 'l' ? 'almoço' : 'jantar'} de hoje ✓`); },
+  ajustes: () => openSheet(ajustesHTML),
+  casaNew: () => { setCasa(newCasa()); location.reload(); },
+  casaJoin: () => { const c = ($('#casa-in').value || '').trim().toLowerCase(); if (!validCasa(c)) { toast('Código inválido. Ele começa com casa-'); return; } setCasa(c); location.reload(); },
+  casaCopy: () => { const t = `Entra na nossa cozinha 🍜 ${inviteLink()}`;
+    try { navigator.clipboard.writeText(t).then(() => toast('Convite copiado 📋'), () => showCopyBox('Convite', t)); } catch(e) { showCopyBox('Convite', t); } },
+  casaWa: el => { el.href = 'https://wa.me/?text=' + encodeURIComponent(`Entra na nossa cozinha 🍜 ${inviteLink()}`); },
+  casaLeave: el => { if (!armed(el)) return; setCasa(''); location.reload(); },
+  initSync: el => { if (!SYNC.db) return; el.disabled = true; SYNC.mode = 'on'; SYNC.sent = {}; flushSync(); subscribeData(); refreshSheet(); renderHero(); toast('Sincronização ligada ☁️'); },
+  bkSave: async () => { const txt = backupText(), name = `cozinha-backup-${wkey(new Date())}.json`;
+    let dl = null; try { dl = window.claude?.use ? await claude.use('downloads') : null; } catch(e) {}
+    if (dl) { try { const r = await dl.save({filename:name, data:txt}); if (r?.status === 'saved') toast('Backup salvo 💾'); } catch(e) { if (e?.code !== 'declined') showCopyBox('Copiar backup', txt); } return; }
+    if (window.claude) { showCopyBox('Copiar backup', txt); return; }
+    const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([txt], {type:'application/json'})); a.download = name; document.body.appendChild(a); a.click(); a.remove(); toast('Backup salvo 💾'); },
+  bkCopy: () => { const txt = backupText();
+    try { navigator.clipboard.writeText(txt).then(() => toast('Backup copiado 📋'), () => showCopyBox('Copiar backup', txt)); } catch(e) { showCopyBox('Copiar backup', txt); } },
+  bkRestore: () => pickFile(async f => { const d = parseBackup(await f.text()); if (!d) { toast('Esse arquivo não é um backup do app'); return; } RESTORE = d; openSheet(restoreHTML); }, '.json,application/json,text/plain'),
+  bkPaste: () => { const d = parseBackup($('#bk-paste').value.trim()); if (!d) { toast('Esse texto não é um backup do app'); return; } RESTORE = d; openSheet(restoreHTML); },
+  bkApply: el => { if (!armed(el)) return; const d = RESTORE;
+    S = {v:1, tags:d.tags, recipes:d.recipes, noshop:d.noshop, weeks:d.weeks, market:d.market || {}, avatars:d.avatars || {lucca:null, izis:null}, names:d.names || {lucca:'Lucca', izis:'Izis'}};
+    RESTORE = null; save(); closeSheet(); render(); toast('Backup restaurado ✓'); },
+  manageNoshop: () => openSheet(noshopHTML),
+  delTag: el => { if (!armed(el)) return; const id = el.dataset.id; S.tags = S.tags.filter(t => t.id !== id); S.recipes.forEach(r => r.tags = r.tags.filter(t => t !== id)); UI.tf.delete(id); UI.ftf.delete(id); save(); refreshSheet(); render(); },
+  tagColor: el => { const t = tagById(el.dataset.id); t.color = el.dataset.c; save(); refreshSheet(); render(); },
+  addNs: () => { S.noshop.push({id:uid(), name:'Nova refeição', emoji:'🍲'}); save(); refreshSheet(); const ins = document.querySelectorAll('[data-ns$=".name"]'); ins[ins.length-1]?.select(); },
+  delNs: el => { if (!armed(el)) return; const id = el.dataset.id; S.noshop = S.noshop.filter(n => n.id !== id);
+    Object.values(S.weeks).forEach(w => w.forEach(d => MEALS.forEach(([k]) => { if (d[k]?.t === 'n' && d[k].id === id) d[k] = null; }))); save(); refreshSheet(); render(); },
+
+  wk: el => { UI.wo += +el.dataset.d; render(); },
+  pickSlot: el => openPicker(+(el.dataset.off ?? UI.wo), +el.dataset.day, el.dataset.meal),
+  pkSeg: el => { PK.seg = el.dataset.seg; refreshSheet(); },
+  pkCook: el => { PK.cook = el.dataset.who || null; refreshSheet(); },
+  assign: el => { const {off, day, meal} = PK; getWeek(off)[day][meal] = {t:el.dataset.t, id:el.dataset.id, cook:PK.cook}; save(); closeSheet();
+    if (UI.tab === 'semana' && off === UI.wo) { render(); bounce('#sl-' + day + '-' + meal); } else { render(); toast('Anotado na semana ✓'); } },
+  slotMenu: el => { SM = {day:+el.dataset.day, meal:el.dataset.meal}; openSheet(slotMenuHTML); },
+  slotMenuToday: el => { UI.wo = 0; A.slotMenu(el); },
+  smCook: el => { getWeek(UI.wo)[SM.day][SM.meal].cook = el.dataset.who || null; save(); refreshSheet(); render(); },
+  smSwap: () => { const {day, meal} = SM; openPicker(UI.wo, day, meal); },
+  smRemove: () => { getWeek(UI.wo)[SM.day][SM.meal] = null; save(); closeSheet(); render(); },
+  clearWeek: el => { if (!armed(el)) return; S.weeks[wkey(sundayOf(UI.wo))] = emptyWeek(); save(); render(); toast('Semana limpinha 🍃'); },
+  repeatWeek: el => { const prev = peekWeek(UI.wo - 1);
+    if (!prev || !prev.some(d => d.l || d.d)) { toast('A semana anterior está vazia'); return; }
+    const cur = getWeek(UI.wo); if (cur.some(d => d.l || d.d) && !armed(el)) return;
+    S.weeks[wkey(sundayOf(UI.wo))] = JSON.parse(JSON.stringify(prev)); save(); render(); document.querySelectorAll('.day').forEach((d, i) => setTimeout(() => bounce(d), i*50)); toast('Semana repetida ↻'); },
+
+  addWeek: el => { AW = {id:el.dataset.id, off:UI.wo, cook:null}; openSheet(addWeekHTML); },
+  awWk: el => { AW.off += +el.dataset.d; refreshSheet(); },
+  awCook: el => { AW.cook = el.dataset.who || null; refreshSheet(); },
+  awPut: el => { const r = S.recipes.find(x => x.id === AW.id); const day = +el.dataset.day, meal = el.dataset.meal;
+    getWeek(AW.off)[day][meal] = {t:'r', id:AW.id, cook:AW.cook}; save(); closeSheet(); render();
+    toast(`${r.emoji} no ${meal === 'l' ? 'almoço' : 'jantar'} de ${DAYS[day].toLowerCase()} ✓`); },
+
+  check: el => { const m = mkt(UI.wo), k = el.dataset.k; m.checked[k] = !m.checked[k]; if (!m.checked[k]) delete m.checked[k]; save();
+    const li = el.closest('.item'); li.classList.toggle('done', !!m.checked[k]); el.setAttribute('aria-pressed', !!m.checked[k]);
+    const {items, done} = marketData(UI.wo); $('#pg-n').innerHTML = `${done}<small>/${items.length}</small>`; $('#pg-bar').style.width = Math.round(done/items.length*100) + '%';
+    $('#pg-msg').textContent = done === items.length ? 'Tudo no carrinho! 🎉' : 'No carrinho'; updateCount();
+    if (m.checked[k] && done === items.length) { confetti(); toast('Lista completa! Bom apetite 🎉'); } },
+  delExtra: el => { const m = mkt(UI.wo); m.extras = m.extras.filter(x => x.id !== el.dataset.id); delete m.checked['x:' + el.dataset.id]; save(); render(); },
+  copyList: () => { const txt = shareText(UI.wo);
+    const fallback = () => { openSheet(() => `<h2>Copiar lista</h2><p class="subt">Selecione o texto e copie.</p><textarea class="inp copybox" id="copybox" readonly>${esc(txt)}</textarea>`); setTimeout(() => $('#copybox')?.select(), 350); };
+    try { navigator.clipboard.writeText(txt).then(() => toast('Lista copiada 📋'), fallback); } catch(e) { fallback(); } },
+  shareWa: el => { el.href = 'https://wa.me/?text=' + encodeURIComponent(shareText(UI.wo)); },
+
+  avatar: el => { AV = el.dataset.who; openSheet(avatarHTML); },
+  avPick: () => pickFile(async f => { S.avatars[AV] = await readImage(f, 256, 'square'); save(); refreshSheet(); renderHero(); toast('Avatar novo ✨'); }),
+  avDel: () => { S.avatars[AV] = null; save(); refreshSheet(); renderHero(); },
+
+  edPhoto: () => pickFile(async f => { ED.photo = await readImage(f, 640); refreshSheet(); }),
+  edPhotoDel: () => { ED.photo = null; refreshSheet(); },
+  edTag: el => { const id = el.dataset.id; ED.tags = ED.tags.includes(id) ? ED.tags.filter(t => t !== id) : [...ED.tags, id]; el.classList.toggle('on'); },
+  edIngAdd: () => { ED.ingredients.push(blankIng()); refreshSheet(); const i = ED.ingredients.length - 1; const inp = $('#ed-ing-' + i + '-name'); inp?.focus(); bounce(inp?.closest('.ing')); },
+  edIngDel: el => { ED.ingredients.splice(+el.dataset.i, 1); refreshSheet(); },
+  edStepAdd: () => { ED.steps.push(''); refreshSheet(); $('#ed-step-' + (ED.steps.length - 1))?.focus(); },
+  edStepDel: el => { ED.steps.splice(+el.dataset.i, 1); refreshSheet(); },
+  edStepMv: el => { const i = +el.dataset.i, j = i + +el.dataset.d; [ED.steps[i], ED.steps[j]] = [ED.steps[j], ED.steps[i]]; refreshSheet(); },
+  edSave: () => { const name = ED.name.trim(); if (!name) { $('#ed-err').hidden = false; $('#sb').scrollTop = 0; $('#ed-name').focus(); return; }
+    const r = {id:ED.id || uid(), name, emoji:(ED.emoji || '🍽️').trim() || '🍽️', photo:ED.photo, time:parseInt(ED.time) || null, tags:ED.tags, fav:ED.fav,
+      ingredients:ED.ingredients.filter(i => i.name.trim()).map(i => ({name:i.name.trim(), qty:parseFloat(String(i.qty).replace(',', '.')) || '', unit:i.unit, cat:i.cat})),
+      steps:ED.steps.map(s => s.trim()).filter(Boolean), created:ED.created || Date.now()};
+    const idx = S.recipes.findIndex(x => x.id === r.id); const isNew = idx < 0;
+    if (isNew) S.recipes.push(r); else S.recipes[idx] = r; save(); closeSheet();
+    if (UI.tab !== 'cardapio' && UI.tab !== 'favoritos') UI.tab = 'cardapio';
+    UI.q = ''; UI.tf.clear(); render(); bounce('#rc-' + r.id); document.getElementById('rc-' + r.id)?.scrollIntoView({block:'center', behavior: reduced ? 'auto' : 'smooth'});
+    toast(isNew ? 'Receita guardada 🎉' : 'Receita atualizada'); }
+};
+
+document.addEventListener('click', e => { const el = e.target.closest('[data-act]'); if (!el) return;
+  if (el.dataset.act !== 'shareWa' && el.dataset.act !== 'casaWa') e.preventDefault(); const fn = A[el.dataset.act]; if (fn) fn(el, e); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && sheetFn) closeSheet();
+  if (e.key === 'Enter' && e.target.id === 'nt-name') { e.preventDefault(); (ED ? A.edNewTag : A.mgNewTag)(); }
+  if ((e.key === 'Enter' || e.key === ' ') && e.target.matches('article[data-act]')) { e.preventDefault(); A.openRecipe(e.target); } });
+
+document.addEventListener('input', e => { const t = e.target;
+  if (t.id === 'q') { UI.q = t.value; $('#list').innerHTML = listHTML(false); return; }
+  if (t.id === 'fq') { UI.fq = t.value; $('#list').innerHTML = listHTML(true); return; }
+  if (t.id === 'pq') { PK.q = t.value; const tmp = document.createElement('div'); tmp.innerHTML = pickerHTML(); $('#plist').innerHTML = tmp.querySelector('#plist').innerHTML; return; }
+  if (t.id === 'xname') { if (!t.dataset.catSet) { const g = guessCat(t.value); if (g) $('#xcat').value = g; } return; }
+  if (t.id === 'xcat') { $('#xname').dataset.catSet = '1'; return; }
+  if (t.dataset.avname) { S.names[t.dataset.avname] = t.value.trim() || (t.dataset.avname === 'lucca' ? 'Lucca' : 'Izis'); save(); renderHero(); return; }
+  if (t.dataset.tg) { const [i, f] = t.dataset.tg.split('.'); S.tags[+i][f] = t.value; save(); return; }
+  if (t.dataset.ns) { const [i, f] = t.dataset.ns.split('.'); S.noshop[+i][f] = t.value; save(); return; }
+  if (t.dataset.f && ED) { const p = t.dataset.f.split('.'), v = t.value;
+    if (p[0] === 'ing') { const g = ED.ingredients[+p[1]]; g[p[2]] = v;
+      if (p[2] === 'cat') g.catSet = true;
+      if (p[2] === 'name' && !g.catSet) { const c = guessCat(v); if (c) { g.cat = c; const sel = $('#ed-ing-' + p[1] + '-cat'); if (sel) sel.value = c; } } }
+    else if (p[0] === 'step') ED.steps[+p[1]] = v;
+    else { ED[p[0]] = v; if (p[0] === 'name') $('#ed-err').hidden = true; if (p[0] === 'emoji' && !ED.photo) { const s = $('.photo-pick span'); if (s) s.textContent = v || '🍽️'; } } }
+});
+document.addEventListener('focusout', e => { const editedList = e.target.dataset.tg || e.target.dataset.ns;
+  setTimeout(() => { const a = document.activeElement; if (a && a.matches('input,textarea,select')) return; if (pendingRender) doRender(); else if (editedList) render(); }, 0); });
+document.addEventListener('submit', e => { if (e.target.id !== 'addx') return; e.preventDefault();
+  const name = $('#xname').value.trim(); if (!name) { $('#xname').focus(); return; }
+  const m = mkt(UI.wo); const x = {id:uid(), name, qty:$('#xqty').value.trim(), cat:$('#xcat').value}; m.extras.push(x); save(); render();
+  bounce(document.querySelector(`[data-id="${x.id}"]`)?.closest('.item')); $('#xname').focus(); });
+
+/* ---------- arrastar refeições entre dias ---------- */
+document.addEventListener('pointerdown', e => {
+  const g = e.target.closest('[data-grip]'); if (!g) return; e.preventDefault();
+  const from = g.dataset.grip, src = g.closest('.slot'), r = src.getBoundingClientRect();
+  const ghost = src.cloneNode(true); ghost.classList.add('ghost'); ghost.removeAttribute('id'); ghost.style.width = r.width + 'px'; document.body.appendChild(ghost);
+  const dx = e.clientX - r.left, dy = e.clientY - r.top; let over = null, lastY = e.clientY, raf = 0;
+  src.classList.add('dragging');
+  const place = (x, y) => { ghost.style.transform = `translate(${x - dx}px, ${y - dy}px) rotate(-2deg) scale(1.03)`; };
+  const hit = (x, y) => { const t = document.elementFromPoint(x, y)?.closest('[data-drop]');
+    if (over && over !== t) over.classList.remove('over'); over = t && t !== src ? t : null; over?.classList.add('over'); };
+  const scrollLoop = () => { if (lastY < 90) scrollBy(0, -10); else if (lastY > innerHeight - 140) scrollBy(0, 10); raf = requestAnimationFrame(scrollLoop); };
+  const move = ev => { lastY = ev.clientY; place(ev.clientX, ev.clientY); hit(ev.clientX, ev.clientY); };
+  const end = () => { cancelAnimationFrame(raf); removeEventListener('pointermove', move); removeEventListener('pointerup', end); removeEventListener('pointercancel', end);
+    ghost.remove(); src.classList.remove('dragging');
+    if (over) { over.classList.remove('over'); const to = over.dataset.drop; const wk = getWeek(UI.wo);
+      const [fi, fk] = from.split('-'), [ti, tk] = to.split('-'); const tmp = wk[+ti][tk]; wk[+ti][tk] = wk[+fi][fk]; wk[+fi][fk] = tmp; save(); render(); bounce('#sl-' + to); } };
+  place(e.clientX, e.clientY); raf = requestAnimationFrame(scrollLoop);
+  addEventListener('pointermove', move); addEventListener('pointerup', end); addEventListener('pointercancel', end);
+});
+
+/* ---------- sincronização entre os celulares ---------- */
+const SYNC = {mode:'local', backend:null, db:null, sent:{}, timer:null, inflight:0, chain:Promise.resolve(), pending:{}, subscribed:false, readonly:false};
+let pendingRender = false;
+function doRender(){ pendingRender = false; render(); if (sheetFn && !ED && !(RL && RL.spinning) && sheetFn !== restoreHTML) refreshSheet(); }
+function scheduleRender(){ const a = document.activeElement; if (a && a.matches('input,textarea,select')) { pendingRender = true; return; } doRender(); }
+const metaDoc = () => ({tags:S.tags, noshop:S.noshop, names:S.names, avatars:S.avatars});
+const weekUsed = w => w.some(d => d.l || d.d);
+const mktUsed = m => Object.keys(m.checked || {}).length || (m.extras || []).length;
+function docsOf(){
+  const d = {'kitchen/meta':metaDoc()};
+  S.recipes.forEach(r => d['recipes/' + r.id] = r);
+  Object.entries(S.weeks).forEach(([k, w]) => { if (weekUsed(w) || SYNC.sent['weeks/' + k]) d['weeks/' + k] = {days:w}; });
+  Object.entries(S.market).forEach(([k, m]) => { if (mktUsed(m) || SYNC.sent['market/' + k]) d['market/' + k] = {checked:m.checked || {}, extras:m.extras || []}; });
+  return d;
+}
+function busy(){ return !!SYNC.timer || SYNC.inflight > 0; }
+function queueSync(){ if (SYNC.mode !== 'on') return; clearTimeout(SYNC.timer); SYNC.timer = setTimeout(flushSync, 500); }
+function flushSync(){
+  clearTimeout(SYNC.timer); SYNC.timer = null; if (SYNC.mode !== 'on' || !SYNC.db) return;
+  const d = docsOf(), ops = [];
+  for (const [p, v] of Object.entries(d)) { const j = JSON.stringify(v); if (SYNC.sent[p] !== j) { SYNC.sent[p] = j; ops.push(() => SYNC.db.doc(p).set(JSON.parse(j))); } }
+  for (const p of Object.keys(SYNC.sent)) if (!(p in d)) { delete SYNC.sent[p]; ops.push(() => SYNC.db.doc(p).delete()); }
+  ops.forEach(op => { SYNC.inflight++; SYNC.chain = SYNC.chain.then(op).catch(writeFail).finally(() => { if (--SYNC.inflight === 0 && !SYNC.timer) applyPending(); }); });
+  if (!ops.length && !SYNC.inflight) applyPending();
+}
+let failToast = 0;
+function writeFail(e){ if (Date.now() - failToast < 4000) return; failToast = Date.now();
+  toast(e?.code === 'quota_exceeded' ? 'A nuvem do app está cheia. Tire fotos grandes de algumas receitas.' : e?.code === 'invalid_argument' ? 'Não consegui salvar na nuvem (receita grande demais ou sem permissão)' : 'Sem conexão: salvei só neste celular por enquanto'); }
+function applyPending(){ const p = SYNC.pending; SYNC.pending = {}; Object.entries(p).forEach(([k, snap]) => applySnap(k, snap)); }
+const clone = o => JSON.parse(JSON.stringify(o));
+function applySnap(kind, snap){
+  if (busy()) { SYNC.pending[kind] = snap; return; }
+  if (kind === 'meta') { const m = clone(snap.data());
+    S.tags = m.tags || []; S.noshop = m.noshop || []; S.names = m.names || S.names; S.avatars = m.avatars || {lucca:null, izis:null};
+    SYNC.sent['kitchen/meta'] = JSON.stringify(metaDoc()); }
+  else { const pre = {recipes:'recipes/', weeks:'weeks/', market:'market/'}[kind];
+    Object.keys(SYNC.sent).forEach(p => { if (p.startsWith(pre)) delete SYNC.sent[p]; });
+    if (kind === 'recipes') S.recipes = snap.docs.map(d => clone(d.data()));
+    if (kind === 'weeks') { S.weeks = {}; snap.docs.forEach(d => { const w = clone(d.data()).days; if (Array.isArray(w) && w.length === 7) S.weeks[d.id] = w; }); }
+    if (kind === 'market') { S.market = {}; snap.docs.forEach(d => { const m = clone(d.data()); S.market[d.id] = {checked:m.checked || {}, extras:m.extras || []}; }); }
+    const all = docsOf(); Object.keys(all).forEach(p => { if (p.startsWith(pre)) SYNC.sent[p] = JSON.stringify(all[p]); }); }
+  saveLocal(); scheduleRender();
+}
+function subscribeData(){
+  if (SYNC.subscribed) return; SYNC.subscribed = true;
+  const err = () => { SYNC.mode = 'error'; renderHero(); };
+  [['recipes','recipes'], ['weeks','weeks'], ['market','market']].forEach(([kind, col]) =>
+    SYNC.db.collection(col).onSnapshot(snap => { if (!snap.metadata.hasPendingWrites) applySnap(kind, snap); }, err));
+}
+function loadScript(src){ return new Promise((res, rej) => { const s = document.createElement('script'); s.src = src; s.onload = res; s.onerror = rej; document.head.appendChild(s); }); }
+const FB_VER = '10.12.2';
+function fbAdapter(fs, casa){
+  const base = 'casas/' + casa + '/';
+  const wrap = s => ({id:s.id, exists:s.exists, data:() => s.data(), metadata:s.metadata});
+  return {
+    doc: p => { const r = fs.doc(base + p); return {set:d => r.set(d), delete:() => r.delete(), onSnapshot:(n, e) => r.onSnapshot(s => n(wrap(s)), e)}; },
+    collection: c => ({onSnapshot:(n, e) => fs.collection(base + c).onSnapshot(s => n({docs:s.docs.map(wrap), metadata:s.metadata}), e)})
+  };
+}
+async function firebaseDb(){
+  const casa = getCasa(); if (!validCasa(casa)) { SYNC.mode = 'nocasa'; renderHero(); return null; }
+  SYNC.mode = 'connecting'; renderHero();
+  const g = `https://www.gstatic.com/firebasejs/${FB_VER}/`;
+  await loadScript(g + 'firebase-app-compat.js');
+  await Promise.all([loadScript(g + 'firebase-auth-compat.js'), loadScript(g + 'firebase-firestore-compat.js')]);
+  if (!firebase.apps.length) firebase.initializeApp(window.FIREBASE_CONFIG);
+  await firebase.auth().signInAnonymously();
+  return fbAdapter(firebase.firestore(), casa);
+}
+async function startSync(){
+  // casa vinda de um convite (?casa=...)
+  try { const q = new URLSearchParams(location.search).get('casa'); if (q && validCasa(q)) { setCasa(q); history.replaceState(null, '', location.pathname + location.hash); } } catch(e) {}
+  let db = null;
+  if (window.claude && typeof window.claude.use === 'function') {
+    SYNC.backend = 'claude'; SYNC.mode = 'connecting'; renderHero();
+    try { db = await window.claude.use('db'); } catch(e) {}
+    if (db) try { const u = await window.claude.use('user'); if (u && (await u.can('data.write')) === false) SYNC.readonly = true; } catch(e) {}
+  } else if (window.FIREBASE_CONFIG && window.FIREBASE_CONFIG.projectId) {
+    SYNC.backend = 'firebase';
+    try { db = await firebaseDb(); } catch(e) { SYNC.mode = 'error'; renderHero(); return; }
+    if (!db) return;
+  } else return;
+  if (!db) { SYNC.mode = 'local'; renderHero(); return; }
+  SYNC.db = db;
+  db.doc('kitchen/meta').onSnapshot(snap => {
+    if (snap.metadata.hasPendingWrites) return;
+    if (!snap.exists) { if (SYNC.mode !== 'on') { SYNC.mode = SYNC.readonly ? 'readonly' : 'empty'; renderHero(); if (sheetFn === ajustesHTML) refreshSheet(); } return; }
+    if (SYNC.mode !== 'on') { SYNC.mode = SYNC.readonly ? 'readonly' : 'on'; subscribeData(); if (sheetFn === ajustesHTML) refreshSheet(); }
+    applySnap('meta', snap);
+  }, () => { SYNC.mode = 'error'; renderHero(); });
+}
+
+/* ---------- início ---------- */
+const h = (location.hash || '').slice(1); if (['cardapio','favoritos','semana','mercado'].includes(h)) UI.tab = h;
+render(); saveLocal(); startSync();
+try { if (window.top === window && /^https?:$/.test(location.protocol) && 'serviceWorker' in navigator) {
+  const l = document.createElement('link'); l.rel = 'manifest'; l.href = 'manifest.webmanifest'; document.head.appendChild(l);
+  navigator.serviceWorker.register('sw.js').catch(() => {}); } } catch(e) {}
+})();
+</script>
+
+</body>
+</html>

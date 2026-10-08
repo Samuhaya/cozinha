@@ -1,0 +1,9 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Cada casa só é acessível por quem sabe o código (casa-xxxxxxxxxxxxxx).
+    match /casas/{casa}/{doc=**} {
+      allow read, write: if request.auth != null && casa.size() >= 16;
+    }
+  }
+}
