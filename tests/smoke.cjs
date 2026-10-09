@@ -25,7 +25,7 @@ const check = (name, ok, extra = '') => { results.push({ name, ok }); console.lo
 
     check(`${tag} abre sem erros`, errors.length === 0, errors.join(' | '));
     check(`${tag} sem rolagem lateral`, await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
-    check(`${tag} avatares com imagem`, await page.locator('#hero .av img').count() === 2);
+    check(`${tag} avatares com imagem`, await page.locator('#hero .av-btn .av img').count() === 2);
     check(`${tag} 5 receitas de exemplo`, await page.locator('.rcard').count() === 5);
     await page.screenshot({ path: `${SHOTS}/${scheme}-1-cardapio.png` });
     if (scheme === 'dark') { await ctx.close(); continue; }

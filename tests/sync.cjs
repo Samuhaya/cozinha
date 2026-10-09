@@ -41,8 +41,10 @@ const FAKE_FB = `(() => {
     if ('docs' in p) cb({ docs: p.docs.map(d => ({ id: d.id, exists: true, data: () => d.data, metadata: meta })), metadata: meta });
     else cb({ id: p.id, exists: p.exists, data: () => p.data || undefined, metadata: meta }); };
   const sub = (kind, path, cb) => { const id = 's' + (n++); cbs[id] = cb; window.__dbSub(id, kind, path); return () => delete cbs[id]; };
-  const fs = { doc: p => ({ set: d => window.__dbSet(p, d), delete: () => window.__dbDel(p), onSnapshot: (cb) => sub('doc', p, cb) }),
-               collection: c => ({ onSnapshot: (cb) => sub('col', c, cb) }) };
+  // como o Firestore real: onSnapshot(opções, cb, erro) ou onSnapshot(cb, erro)
+  const pick = a => typeof a[0] === 'function' ? a[0] : a[1];
+  const fs = { doc: p => ({ set: d => window.__dbSet(p, d), delete: () => window.__dbDel(p), onSnapshot: (...a) => sub('doc', p, pick(a)) }),
+               collection: c => ({ onSnapshot: (...a) => sub('col', c, pick(a)) }) };
   window.firebase = { apps: [], initializeApp(c) { this.apps.push(c); }, auth: () => ({ signInAnonymously: async () => ({}) }), firestore: () => fs };
 })();`;
 

@@ -826,8 +826,12 @@ function spin(){
 /* ajustes, sincronização e backup */
 const SYNC_LABEL = {local:'Só neste celular', nocasa:'Conectar a casa', connecting:'Conectando…', empty:'Ligar sincronização', on:'Sincronizado', readonly:'Só leitura', error:'Sem conexão'};
 const CASA_KEY = 'cozinha-casa';
-function getCasa(){ try { return localStorage.getItem(CASA_KEY) || ''; } catch(e) { return ''; } }
-function setCasa(c){ try { c ? localStorage.setItem(CASA_KEY, c) : localStorage.removeItem(CASA_KEY); } catch(e) {} }
+// guarda também num cookie: no iPhone o app da tela inicial nem sempre enxerga o localStorage do Safari
+const casaCookie = () => { try { return (document.cookie.match(/(?:^|; )cozinha-casa=([a-z0-9-]+)/) || [])[1] || ''; } catch(e) { return ''; } };
+function getCasa(){ let c = ''; try { c = localStorage.getItem(CASA_KEY) || ''; } catch(e) {} return c || casaCookie(); }
+function setCasa(c){ try { c ? localStorage.setItem(CASA_KEY, c) : localStorage.removeItem(CASA_KEY); } catch(e) {}
+  try { document.cookie = 'cozinha-casa=' + (c || '') + ';path=/;max-age=' + (c ? 315360000 : 0) + ';SameSite=Lax'; } catch(e) {} }
+const casaFrom = t => { t = (t || '').trim(); const m = t.match(/[?&]casa=([^&#\s]+)/); return decodeURIComponent(m ? m[1] : t).trim().toLowerCase(); };
 const validCasa = c => /^[a-z0-9-]{16,64}$/.test(c);
 function newCasa(){ const a = 'abcdefghjkmnpqrstuvwxyz23456789'; let c = 'casa-'; const r = crypto.getRandomValues(new Uint8Array(14)); r.forEach(x => c += a[x % a.length]); return c; }
 const inviteLink = () => location.origin + location.pathname + '?casa=' + encodeURIComponent(getCasa());
@@ -835,18 +839,18 @@ function ajustesHTML(){
   const m = SYNC.mode;
   const syncTxt = {
     local:'Este endereço guarda os dados só neste aparelho.',
-    nocasa:'Crie o código da casa neste celular e mande o convite para a Izis. Se ela já criou, cole o código que ela mandou.',
+    nocasa:'Recebeu o convite? Cole aqui o link ou o código e toque em Entrar. Só crie um código novo se ninguém da casa criou ainda.',
     connecting:'Conectando…',
     empty:'A sincronização ainda não foi ligada. Ao ligar, as receitas, a semana e o mercado deste celular passam a ser os dados dos dois. Faça isso no celular que tem os dados certos.',
-    on:'Tudo o que um de vocês muda aparece no celular do outro em poucos segundos.',
+    on:'Tudo o que um de vocês muda aparece no celular do outro em poucos segundos. O código da casa precisa ser igual nos dois celulares.',
     readonly:'Você pode ver tudo, mas não alterar. Peça para o dono do app te dar acesso de editor.',
     error:'Não consegui falar com a nuvem agora. As mudanças continuam salvas neste celular.'
   }[m];
   return `<h2>Ajustes</h2>
     <section class="set-sec"><h3>☁️ Sincronização</h3><p>${syncTxt}</p>
       ${m === 'empty' ? `<button class="btn solid" data-act="initSync">Ligar sincronização</button>` : ''}
-      ${m === 'nocasa' ? `<button class="btn solid" data-act="casaNew">Criar código da casa</button>
-        <div class="newtag"><input class="inp" id="casa-in" placeholder="casa-xxxxxxxxxxxxxx" autocomplete="off" autocapitalize="off" aria-label="Código da casa"><button class="pill" data-act="casaJoin">Entrar</button></div>` : ''}
+      ${m === 'nocasa' ? `<div class="newtag"><input class="inp" id="casa-in" placeholder="Link do convite ou casa-xxxx" autocomplete="off" autocapitalize="off" aria-label="Código da casa"><button class="pill" data-act="casaJoin">Entrar</button></div>
+        <button class="btn solid" data-act="casaNew">Criar código da casa</button>` : ''}
       ${SYNC.backend === 'firebase' && getCasa() ? `<p>Código da casa: <b style="color:var(--ink);user-select:all">${esc(getCasa())}</b></p>
         <div class="btn-row"><button class="btn" data-act="casaCopy">Copiar convite</button><a class="btn" data-act="casaWa" href="#" target="_blank" rel="noopener">WhatsApp</a></div>
         <button class="btn danger" data-act="casaLeave" data-confirm="Toque para confirmar">Sair desta casa</button>` : ''}</section>
@@ -939,7 +943,7 @@ const A = {
     toast(`${RL.cur.emoji || '🍽️'} no ${meal === 'l' ? 'almoço' : 'jantar'} de hoje ✓`); },
   ajustes: () => openSheet(ajustesHTML),
   casaNew: () => { setCasa(newCasa()); location.reload(); },
-  casaJoin: () => { const c = ($('#casa-in').value || '').trim().toLowerCase(); if (!validCasa(c)) { toast('Código inválido. Ele começa com casa-'); return; } setCasa(c); location.reload(); },
+  casaJoin: () => { const c = casaFrom($('#casa-in').value); if (!validCasa(c)) { toast('Código inválido. Ele começa com casa-'); return; } setCasa(c); location.reload(); },
   casaCopy: () => { const t = `Entra na nossa cozinha 🍜 ${inviteLink()}`;
     try { navigator.clipboard.writeText(t).then(() => toast('Convite copiado 📋'), () => showCopyBox('Convite', t)); } catch(e) { showCopyBox('Convite', t); } },
   casaWa: el => { el.href = 'https://wa.me/?text=' + encodeURIComponent(`Entra na nossa cozinha 🍜 ${inviteLink()}`); },
@@ -1126,8 +1130,9 @@ function fbAdapter(fs, casa){
   const base = 'casas/' + casa + '/';
   const wrap = s => ({id:s.id, exists:s.exists, data:() => s.data(), metadata:s.metadata});
   return {
-    doc: p => { const r = fs.doc(base + p); return {set:d => r.set(d), delete:() => r.delete(), onSnapshot:(n, e) => r.onSnapshot(s => n(wrap(s)), e)}; },
-    collection: c => ({onSnapshot:(n, e) => fs.collection(base + c).onSnapshot(s => n({docs:s.docs.map(wrap), metadata:s.metadata}), e)})
+    // includeMetadataChanges: sem isso, uma mudança do outro celular que chega enquanto a nossa ainda está salvando se perde
+    doc: p => { const r = fs.doc(base + p); return {set:d => r.set(d), delete:() => r.delete(), onSnapshot:(n, e) => r.onSnapshot({includeMetadataChanges:true}, s => n(wrap(s)), e)}; },
+    collection: c => ({onSnapshot:(n, e) => fs.collection(base + c).onSnapshot({includeMetadataChanges:true}, s => n({docs:s.docs.map(wrap), metadata:s.metadata}), e)})
   };
 }
 async function firebaseDb(){
